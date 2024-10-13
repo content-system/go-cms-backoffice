@@ -13,6 +13,8 @@ import (
 const (
 	role      = "role"
 	user      = "user"
+	article   = "article"
+	job       = "job"
 	audit_log = "audit_log"
 )
 
@@ -40,6 +42,7 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	HandleWithSecurity(sec, roles, "/{roleId}", app.Role.Update, role, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, roles, "/{userId}", app.Role.Patch, user, c.ActionWrite, c.PATCH)
 	HandleWithSecurity(sec, roles, "/{roleId}", app.Role.Delete, role, c.ActionWrite, c.DELETE)
+	HandleWithSecurity(sec, roles, "/{roleId}/assign", app.Role.AssignRole, role, c.ActionWrite, c.PUT)
 
 	HandleWithSecurity(sec, r, "/roles", app.Roles.Load, user, c.ActionRead, c.GET)
 	users := r.PathPrefix("/users").Subrouter()
@@ -51,6 +54,22 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Update, user, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Patch, user, c.ActionWrite, c.PATCH)
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Delete, user, c.ActionWrite, c.DELETE)
+
+	articles := r.PathPrefix("/articles").Subrouter()
+	HandleWithSecurity(sec, articles, "/search", app.Article.Search, article, c.ActionRead, c.GET, c.POST)
+	HandleWithSecurity(sec, articles, "/{articleId}", app.Article.Load, article, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, articles, "", app.Article.Create, article, c.ActionWrite, c.POST)
+	HandleWithSecurity(sec, articles, "/{articleId}", app.Article.Update, article, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, articles, "/{articleId}", app.Article.Patch, article, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, articles, "/{articleId}", app.Article.Delete, article, c.ActionWrite, c.DELETE)
+
+	jobs := r.PathPrefix("/jobs").Subrouter()
+	HandleWithSecurity(sec, jobs, "/search", app.Job.Search, job, c.ActionRead, c.GET, c.POST)
+	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Load, job, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, jobs, "", app.Job.Create, job, c.ActionWrite, c.POST)
+	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Update, job, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Patch, job, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Delete, job, c.ActionWrite, c.DELETE)
 
 	HandleWithSecurity(sec, r, "/audit-logs", app.AuditLog.Search, audit_log, c.ActionRead, c.GET, c.POST)
 	HandleWithSecurity(sec, r, "/audit-logs/search", app.AuditLog.Search, audit_log, c.ActionRead, c.GET, c.POST)

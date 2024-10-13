@@ -153,7 +153,7 @@ func buildUpdateStatements(role *Role, driver string, buildParam func(int) strin
 	sts := q.NewStatements(true)
 	sts.Add(q.BuildToUpdate("roles", role, buildParam, roleSchema))
 
-	deleteModules := fmt.Sprintf("delete from role_modules where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from role_modules where role_id = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{role.RoleId})
 	if modules != nil {
 		query, args, er2 := q.BuildToInsertBatch("role_modules", modules, driver, roleModuleSchema)
@@ -189,7 +189,7 @@ func (s *RoleAdapter) Patch(ctx context.Context, role map[string]interface{}) (i
 		sts = q.NewStatements(false)
 	}
 
-	deleteModules := fmt.Sprintf("delete from rolemodules where roleId = %s", s.BuildParam(1))
+	deleteModules := fmt.Sprintf("delete from role_modules where role_id = %s", s.BuildParam(1))
 	sts.Add(deleteModules, []interface{}{roleId})
 
 	if ok4 {
@@ -264,12 +264,12 @@ func buildAssignRoleStatements(roleId string, users []string, driver string, bui
 	if err != nil {
 		return nil, err
 	}
-	sts := q.NewStatements(true)
+	sts := q.NewStatements(false)
 
-	deleteModules := fmt.Sprintf("delete from user_roles where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from user_roles where role_id = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{roleId})
 	if modules != nil {
-		query, args, er2 := q.BuildToInsertBatch("userRoles", modules, driver, userRoleSchema)
+		query, args, er2 := q.BuildToInsertBatch("user_roles", modules, driver, userRoleSchema)
 		if er2 != nil {
 			return nil, er2
 		}

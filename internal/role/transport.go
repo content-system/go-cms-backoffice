@@ -42,7 +42,7 @@ func NewRoleTransport(db *sql.DB, checkDelete string, logError core.Log, templat
 		return nil, err
 	}
 	// roleValidator := user.NewRoleValidator(db, conf.Sql.Role.Duplicate, validator.validateFileName)
-	roleValidator, err := unique.NewUniqueFieldValidator[*Role](db, "roles", "rolename", validator.Validate)
+	roleValidator, err := unique.NewUniqueFieldValidator[*Role](db, "roles", "role_name", validator.Validate)
 	if err != nil {
 		return nil, err
 	}

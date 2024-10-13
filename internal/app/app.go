@@ -22,7 +22,9 @@ import (
 	"github.com/core-go/sql/template"
 	"github.com/core-go/sql/template/xml"
 
+	a "go-service/internal/article"
 	"go-service/internal/audit-log"
+	j "go-service/internal/job"
 	r "go-service/internal/role"
 	u "go-service/internal/user"
 	p "go-service/pkg/privilege"
@@ -43,6 +45,8 @@ type ApplicationContext struct {
 	User                 u.UserTransport
 	AuditLog             *audit.AuditLogHandler
 	Settings             *se.Handler
+	Article              a.ArticleTransport
+	Job                  j.JobTransport
 }
 
 func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
@@ -130,6 +134,15 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
+	articleHandler, err := a.NewArticleTransport(db, logError, writeLog, cfg.Action)
+	if err != nil {
+		return nil, err
+	}
+	jobHandler, err := j.NewJobTransport(db, logError, writeLog, cfg.Action)
+	if err != nil {
+		return nil, err
+	}
+
 	reportDB, er8 := q.Open(cfg.AuditLog.DB)
 	if er8 != nil {
 		return nil, er8
@@ -159,6 +172,8 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		User:                 userHandler,
 		AuditLog:             auditLogHandler,
 		Settings:             settingsHandler,
+		Article:              articleHandler,
+		Job:                  jobHandler,
 	}
 	return app, nil
 }

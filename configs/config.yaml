@@ -62,7 +62,7 @@ auth:
 
 db:
   driver: postgres
-  data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
+  data_source_name: postgres://postgres:abcd1234@localhost/cms5?sslmode=disable
 
 tracking:
   user: userId
@@ -95,9 +95,9 @@ role:
     id: roleId
     name: roleName
   loader:
-    id: roleId
-    name: roleName
-    sequence: roleName
+    id: role_id
+    name: role_name
+    sequence: role_name
     status: status
     active: A
 
@@ -108,7 +108,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms5?sslmode=disable
   schema:
     id: id
     user: userid

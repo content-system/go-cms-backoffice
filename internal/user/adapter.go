@@ -115,7 +115,7 @@ func buildUpdateUserStatements(user *User, driver string, buildParam func(int) s
 	sts := q.NewStatements(true)
 	sts.Add(q.BuildToUpdate("users", user, buildParam, userSchema))
 
-	deleteModules := fmt.Sprintf("delete from userroles where userId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from userroles where user_id = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{user.UserId})
 
 	if modules != nil {
@@ -140,7 +140,7 @@ func (s *UserAdapter) buildPatchUserStatements(json map[string]interface{}) (q.S
 	columnMap := q.JSONToColumns(json, s.jsonColumnMap)
 	sts.Add(q.BuildToPatch("users", columnMap, s.keys, s.BuildParam))
 	if json["roles"] != nil {
-		deleteModules := fmt.Sprintf("delete from user_roles where userid = %s", s.BuildParam(1))
+		deleteModules := fmt.Sprintf("delete from user_roles where user_id = %s", s.BuildParam(1))
 		sts.Add(deleteModules, []interface{}{json["userId"]})
 		a := json["roles"]
 		t, ok := a.([]string)
@@ -181,7 +181,7 @@ func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
 func buildDeleteUserStatements(id string, buildParam func(int) string) (q.Statements, error) {
 	sts := q.NewStatements(false)
 
-	deleteModules := fmt.Sprintf("delete from user_roles where userId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from user_roles where user_id = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{id})
 
 	deleteRole := fmt.Sprintf("delete from users where userId = %s", buildParam(1))
@@ -203,7 +203,7 @@ func buildUserModules(userID string, roles []string) ([]userRole, error) {
 
 func (s *UserAdapter) GetUserByRole(ctx context.Context, roleId string) ([]User, error) {
 	var users []User
-	query := fmt.Sprintf(`select u.* from users u join user_roles ur on u.userid = ur.userid where ur.roleid = %s`, s.BuildParam(1))
+	query := fmt.Sprintf(`select u.* from users u join user_roles ur on u.user_id = ur.user_id where ur.role_id = %s`, s.BuildParam(1))
 	err := q.Query(ctx, s.db, s.Map, &users, query, roleId)
 	if err != nil {
 		return nil, err

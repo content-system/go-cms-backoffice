@@ -158,12 +158,12 @@ func (h *RoleHandler) AssignRole(w http.ResponseWriter, r *http.Request) {
 				h.Error(r.Context(), err.Error())
 				h.Log(r.Context(), h.Resource, "assign", false, err.Error())
 				http.Error(w, core.InternalServerError, http.StatusInternalServerError)
-			} else if res == 0 {
+			} else if res <= 0 {
 				h.Log(r.Context(), h.Resource, "assign", false, fmt.Sprintf("not found '%s'", id))
 				http.Error(w, core.InternalServerError, http.StatusInternalServerError)
 			} else {
 				h.Log(r.Context(), h.Resource, "assign", true, fmt.Sprintf("assign '%s'", id))
-				http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+				core.JSON(w, http.StatusOK, res)
 			}
 		}
 	}

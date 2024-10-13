@@ -17,7 +17,7 @@ create table modules (
   actions int4 null,
   parent varchar(40),
   created_by varchar(40),
-  createdat timestamptz,
+  created_at timestamptz,
   updated_by varchar(40),
   updated_at timestamptz
 );
@@ -36,7 +36,7 @@ create table users (
   language varchar(5),
   dateformat varchar(12),
   created_by varchar(40),
-  createdat timestamptz,
+  created_at timestamptz,
   updated_by varchar(40),
   updated_at timestamptz
 );
@@ -47,7 +47,7 @@ create table roles (
   status char(1) not null,
   remark varchar(255),
   created_by varchar(40),
-  createdat timestamptz,
+  created_at timestamptz,
   updated_by varchar(40),
   updated_at timestamptz
 );

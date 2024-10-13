@@ -134,7 +134,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	if er8 != nil {
 		return nil, er8
 	}
-	userQuery := ur.NewUserAdapter(db, "select user_id, display_name, email, phone, image_url from users where userId ")
+	userQuery := ur.NewUserAdapter(db, "select user_id, display_name, email, phone, image_url from users where user_id ")
 
 	auditLogQuery, er9 := audit.NewAuditLogQuery(reportDB, templates, userQuery.Query)
 	if er9 != nil {

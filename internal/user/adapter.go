@@ -10,8 +10,8 @@ import (
 )
 
 type userRole struct {
-	UserId string `json:"userId,omitempty" gorm:"column:userId;primary_key" bson:"_id,omitempty" validate:"required,max=20,code"`
-	RoleId string `json:"roleId,omitempty" gorm:"column:roleId;primary_key" bson:"_id,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"max=40"`
+	UserId string `json:"userId,omitempty" gorm:"column:user_id;primary_key" bson:"_id,omitempty" validate:"required,max=20,code"`
+	RoleId string `json:"roleId,omitempty" gorm:"column:role_id;primary_key" bson:"_id,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"max=40"`
 }
 
 type UserAdapter struct {
@@ -62,7 +62,7 @@ func (s *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 
 	var userRoles []userRole
 	roles := make([]string, 0)
-	query := fmt.Sprintf(`select roleId from userRoles where userId = %s`, s.BuildParam(1))
+	query := fmt.Sprintf(`select roleId from user_roles where userId = %s`, s.BuildParam(1))
 	err := q.Query(ctx, s.db, s.RoleMap, &userRoles, query, id)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func buildInsertUserStatements(user *User, driver string, buildParam func(int) s
 	sts := q.NewStatements(true)
 	sts.Add(q.BuildToInsert("users", user, buildParam, userSchema))
 	if modules != nil {
-		query, args, er2 := q.BuildToInsertBatch("userRoles", modules, driver, userRoleSchema)
+		query, args, er2 := q.BuildToInsertBatch("user_roles", modules, driver, userRoleSchema)
 		if er2 != nil {
 			return sts, er2
 		}
@@ -119,7 +119,7 @@ func buildUpdateUserStatements(user *User, driver string, buildParam func(int) s
 	sts.Add(deleteModules, []interface{}{user.UserId})
 
 	if modules != nil {
-		query, args, er2 := q.BuildToInsertBatch("userRoles", modules, driver, userRoleSchema)
+		query, args, er2 := q.BuildToInsertBatch("user_roles", modules, driver, userRoleSchema)
 		if er2 != nil {
 			return sts, er2
 		}
@@ -140,13 +140,13 @@ func (s *UserAdapter) buildPatchUserStatements(json map[string]interface{}) (q.S
 	columnMap := q.JSONToColumns(json, s.jsonColumnMap)
 	sts.Add(q.BuildToPatch("users", columnMap, s.keys, s.BuildParam))
 	if json["roles"] != nil {
-		deleteModules := fmt.Sprintf("delete from userRoles where userid = %s", s.BuildParam(1))
+		deleteModules := fmt.Sprintf("delete from user_roles where userid = %s", s.BuildParam(1))
 		sts.Add(deleteModules, []interface{}{json["userId"]})
 		a := json["roles"]
 		t, ok := a.([]string)
 		if ok {
 			for i := 0; i < len(t); i++ {
-				insertModules := fmt.Sprintf("insert into userroles values (%s,%s)", s.BuildParam(1), s.BuildParam(2))
+				insertModules := fmt.Sprintf("insert into user_roles values (%s,%s)", s.BuildParam(1), s.BuildParam(2))
 				sts.Add(insertModules, []interface{}{json["userId"], t[i]})
 			}
 		}
@@ -181,7 +181,7 @@ func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
 func buildDeleteUserStatements(id string, buildParam func(int) string) (q.Statements, error) {
 	sts := q.NewStatements(false)
 
-	deleteModules := fmt.Sprintf("delete from userroles where userId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from user_roles where userId = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{id})
 
 	deleteRole := fmt.Sprintf("delete from users where userId = %s", buildParam(1))
@@ -203,7 +203,7 @@ func buildUserModules(userID string, roles []string) ([]userRole, error) {
 
 func (s *UserAdapter) GetUserByRole(ctx context.Context, roleId string) ([]User, error) {
 	var users []User
-	query := fmt.Sprintf(`select u.* from users u join userroles ur on u.userid = ur.userid where ur.roleid = %s`, s.BuildParam(1))
+	query := fmt.Sprintf(`select u.* from users u join user_roles ur on u.userid = ur.userid where ur.roleid = %s`, s.BuildParam(1))
 	err := q.Query(ctx, s.db, s.Map, &users, query, roleId)
 	if err != nil {
 		return nil, err

@@ -15,13 +15,13 @@ import (
 const ActionNone int32 = 0
 
 type userRole struct {
-	UserId string `json:"userId,omitempty" gorm:"column:userId;primary_key" bson:"_id,omitempty" validate:"required,max=20,code"`
-	RoleId string `json:"roleId,omitempty" gorm:"column:roleId;primary_key" bson:"_id,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"max=40"`
+	UserId string `json:"userId,omitempty" gorm:"column:user_id;primary_key" bson:"_id,omitempty" validate:"required,max=20,code"`
+	RoleId string `json:"roleId,omitempty" gorm:"column:role_id;primary_key" bson:"_id,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"max=40"`
 }
 
 type roleModule struct {
-	RoleId      string `json:"roleId,omitempty" gorm:"column:roleId" bson:"roleId,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"required"`
-	ModuleId    string `json:"moduleId,omitempty" gorm:"column:moduleId" bson:"moduleId,omitempty" dynamodbav:"moduleId,omitempty" firestore:"moduleId,omitempty" validate:"required"`
+	RoleId      string `json:"roleId,omitempty" gorm:"column:role_id" bson:"roleId,omitempty" dynamodbav:"roleId,omitempty" firestore:"roleId,omitempty" validate:"required"`
+	ModuleId    string `json:"moduleId,omitempty" gorm:"column:module_id" bson:"moduleId,omitempty" dynamodbav:"moduleId,omitempty" firestore:"moduleId,omitempty" validate:"required"`
 	Permissions int32  `json:"permissions,omitempty" gorm:"column:permissions" bson:"permissions,omitempty" dynamodbav:"permissions,omitempty" firestore:"permissions,omitempty" validate:"required"`
 }
 
@@ -109,7 +109,7 @@ func buildPrivileges(modules []roleModule) []string {
 func getModules(ctx context.Context, db *sql.DB, roleId string, buildParam func(int) string, m map[string]int) ([]roleModule, error) {
 	var modules []roleModule
 	p := buildParam(1)
-	query := fmt.Sprintf(`select moduleId, permissions from roleModules where roleId = %s`, p)
+	query := fmt.Sprintf(`select moduleId, permissions from role_modules where roleId = %s`, p)
 	err := q.Query(ctx, db, m, &modules, query, roleId)
 	return modules, err
 }
@@ -129,7 +129,7 @@ func buildInsertStatements(role *Role, driver string, buildParam func(int) strin
 	sts := q.NewStatements(true)
 	sts.Add(q.BuildToInsert("roles", role, buildParam, roleSchema))
 	if modules != nil {
-		query, args, er2 := q.BuildToInsertBatch("roleModules", modules, driver, roleModuleSchema)
+		query, args, er2 := q.BuildToInsertBatch("role_modules", modules, driver, roleModuleSchema)
 		if er2 != nil {
 			return nil, er2
 		}
@@ -153,10 +153,10 @@ func buildUpdateStatements(role *Role, driver string, buildParam func(int) strin
 	sts := q.NewStatements(true)
 	sts.Add(q.BuildToUpdate("roles", role, buildParam, roleSchema))
 
-	deleteModules := fmt.Sprintf("delete from roleModules where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from role_modules where roleId = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{role.RoleId})
 	if modules != nil {
-		query, args, er2 := q.BuildToInsertBatch("roleModules", modules, driver, roleModuleSchema)
+		query, args, er2 := q.BuildToInsertBatch("role_modules", modules, driver, roleModuleSchema)
 		if er2 != nil {
 			return nil, er2
 		}
@@ -197,7 +197,7 @@ func (s *RoleAdapter) Patch(ctx context.Context, role map[string]interface{}) (i
 		if err != nil {
 			return -1, err
 		}
-		query, args, er2 := q.BuildToInsertBatch("roleModules", modules, s.Driver, s.ModuleSchema)
+		query, args, er2 := q.BuildToInsertBatch("role_modules", modules, s.Driver, s.ModuleSchema)
 		if er2 != nil {
 			return -1, er2
 		}
@@ -233,7 +233,7 @@ func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
 func buildDeleteStatements(roleId string, buildParam func(int) string) (q.Statements, error) {
 	sts := q.NewStatements(false)
 
-	deleteModules := fmt.Sprintf("delete from roleModules where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from role_modules where roleId = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{roleId})
 
 	deleteRole := fmt.Sprintf("delete from roles where roleId = %s", buildParam(1))
@@ -266,7 +266,7 @@ func buildAssignRoleStatements(roleId string, users []string, driver string, bui
 	}
 	sts := q.NewStatements(true)
 
-	deleteModules := fmt.Sprintf("delete from userroles where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from user_roles where roleId = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{roleId})
 	if modules != nil {
 		query, args, er2 := q.BuildToInsertBatch("userRoles", modules, driver, userRoleSchema)

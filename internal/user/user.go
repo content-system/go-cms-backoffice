@@ -13,10 +13,10 @@ type User struct {
 	Phone       string     `json:"phone,omitempty" gorm:"column:phone" bson:"phone,omitempty" dynamodbav:"phone,omitempty" firestore:"phone,omitempty" match:"equal" validate:"phone,max=16"`
 	Title       string     `json:"title,omitempty" gorm:"column:title" bson:"title,omitempty" dynamodbav:"title,omitempty" firestore:"title,omitempty" match:"equal" validate:"max=5,code"`
 	Position    string     `json:"position,omitempty" gorm:"column:position" bson:"position,omitempty" dynamodbav:"position,omitempty" firestore:"position,omitempty" match:"equal" validate:"max=1,code"`
-	CreatedBy   *string    `json:"createdBy,omitempty" gorm:"column:createdby" bson:"createdBy,omitempty" dynamodbav:"createdBy,omitempty" firestore:"createdBy,omitempty"`
-	CreatedAt   *time.Time `json:"createdAt,omitempty" gorm:"column:createdat" bson:"createdAt,omitempty" dynamodbav:"createdAt,omitempty" firestore:"createdAt,omitempty"`
-	UpdatedBy   *string    `json:"updatedBy,omitempty" gorm:"column:updatedby" bson:"updatedBy,omitempty" dynamodbav:"updatedBy,omitempty" firestore:"updatedBy,omitempty"`
-	UpdatedAt   *time.Time `json:"updatedAt,omitempty" gorm:"column:updatedat" bson:"updatedAt,omitempty" dynamodbav:"updatedAt,omitempty" firestore:"updatedAt,omitempty"`
-	LastLogin   *time.Time `json:"lastLogin,omitempty" gorm:"lastLogin" bson:"lastLogin,omitempty" dynamodbav:"lastLogin,omitempty" firestore:"lastLogin,omitempty"`
-	Roles       []string   `json:"roles,omitempty" bson:"roles,omitempty" dynamodbav:"roles,omitempty" firestore:"roles,omitempty"`
+	CreatedBy   *string    `json:"createdBy,omitempty" gorm:"column:created_by" bson:"createdBy,omitempty" dynamodbav:"createdBy,omitempty" firestore:"createdBy,omitempty"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty" gorm:"column:created_at" bson:"createdAt,omitempty" dynamodbav:"createdAt,omitempty" firestore:"createdAt,omitempty"`
+	UpdatedBy   *string    `json:"updatedBy,omitempty" gorm:"column:updated_by" bson:"updatedBy,omitempty" dynamodbav:"updatedBy,omitempty" firestore:"updatedBy,omitempty"`
+	UpdatedAt   *time.Time `json:"updatedAt,omitempty" gorm:"column:updated_at" bson:"updatedAt,omitempty" dynamodbav:"updatedAt,omitempty" firestore:"updatedAt,omitempty"`
+	// LastLogin   *time.Time `json:"lastLogin,omitempty" gorm:"lastLogin" bson:"lastLogin,omitempty" dynamodbav:"lastLogin,omitempty" firestore:"lastLogin,omitempty"`
+	Roles []string `json:"roles,omitempty" bson:"roles,omitempty" dynamodbav:"roles,omitempty" firestore:"roles,omitempty"`
 }

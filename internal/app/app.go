@@ -91,7 +91,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	if er4 != nil {
 		return nil, er4
 	}
-	authenticator := auth.NewBasicAuthenticator(authStatus, ldapAuthenticator.Authenticate, userPort, tokenPort.GenerateToken, cfg.Auth.Token, cfg.Auth.Payload, nil)
+	authenticator := auth.NewBasicAuthenticator(authStatus, ldapAuthenticator.Authenticate, userPort, tokenPort.GenerateToken, cfg.Auth.Token, cfg.Auth.Payload, privilegePort.Load)
 	authenticationHandler := ah.NewAuthenticationHandler(authenticator.Authenticate, authStatus.Error, authStatus.Timeout, logError, writeLog)
 
 	privilegeReader, er5 := as.NewPrivilegesReader(db, cfg.Sql.Privileges)
@@ -134,7 +134,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	if er8 != nil {
 		return nil, er8
 	}
-	userQuery := ur.NewUserAdapter(db, "select userId, displayName, email, phone, imageURL from users where userId ")
+	userQuery := ur.NewUserAdapter(db, "select user_id, display_name, email, phone, image_url from users where userId ")
 
 	auditLogQuery, er9 := audit.NewAuditLogQuery(reportDB, templates, userQuery.Query)
 	if er9 != nil {
@@ -142,7 +142,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	}
 	auditLogHandler := audit.NewAuditLogHandler(auditLogQuery, logError)
 
-	settingsHandler := se.NewSettingsHandler(logError, writeLog, db, "users", buildParam, "userId", "userid", "dateformat", "language")
+	settingsHandler := se.NewSettingsHandler(logError, writeLog, db, "users", buildParam, "userId", "user_id", "dateformat", "language")
 
 	app := &ApplicationContext{
 		Health:               healthHandler,

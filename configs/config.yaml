@@ -58,11 +58,11 @@ auth:
     user_type: roleId
   user_status:
     disable: I
-  query: select userId as id, username, email, displayName as displayname, language, dateformat, status from users where username = ?
+  query: select user_id as id, username, email, display_name as displayname, language, dateformat, status from users where username = ?
 
 db:
   driver: postgres
-  data_source_name: postgres://postgres:abcd1234@localhost/backoffice?sslmode=disable
+  data_source_name: postgres://postgres:abcd1234@localhost/cms2?sslmode=disable
 
 tracking:
   user: userId
@@ -108,7 +108,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/backoffice?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms2?sslmode=disable
   schema:
     id: id
     user: userid

@@ -69,7 +69,7 @@ func NewRoleAdapter(db *sql.DB, checkDelete string) (*RoleAdapter, error) {
 
 func (s *RoleAdapter) Load(ctx context.Context, roleId string) (*Role, error) {
 	var roles []Role
-	sql := fmt.Sprintf("select * from roles where roleId = %s", s.BuildParam(1))
+	sql := fmt.Sprintf("select * from roles where role_id = %s", s.BuildParam(1))
 	er1 := q.Query(ctx, s.db, s.Map, &roles, sql, roleId)
 	if er1 != nil {
 		return nil, er1
@@ -109,7 +109,7 @@ func buildPrivileges(modules []roleModule) []string {
 func getModules(ctx context.Context, db *sql.DB, roleId string, buildParam func(int) string, m map[string]int) ([]roleModule, error) {
 	var modules []roleModule
 	p := buildParam(1)
-	query := fmt.Sprintf(`select moduleId, permissions from role_modules where roleId = %s`, p)
+	query := fmt.Sprintf(`select module_id, permissions from role_modules where role_id = %s`, p)
 	err := q.Query(ctx, db, m, &modules, query, roleId)
 	return modules, err
 }
@@ -233,10 +233,10 @@ func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
 func buildDeleteStatements(roleId string, buildParam func(int) string) (q.Statements, error) {
 	sts := q.NewStatements(false)
 
-	deleteModules := fmt.Sprintf("delete from role_modules where roleId = %s", buildParam(1))
+	deleteModules := fmt.Sprintf("delete from role_modules where role_id = %s", buildParam(1))
 	sts.Add(deleteModules, []interface{}{roleId})
 
-	deleteRole := fmt.Sprintf("delete from roles where roleId = %s", buildParam(1))
+	deleteRole := fmt.Sprintf("delete from roles where role_id = %s", buildParam(1))
 	sts.Add(deleteRole, []interface{}{roleId})
 
 	return sts, nil

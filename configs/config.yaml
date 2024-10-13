@@ -62,7 +62,7 @@ auth:
 
 db:
   driver: postgres
-  data_source_name: postgres://postgres:abcd1234@localhost/cms2?sslmode=disable
+  data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
 
 tracking:
   user: userId
@@ -108,7 +108,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/cms2?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
   schema:
     id: id
     user: userid

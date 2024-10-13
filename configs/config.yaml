@@ -1,0 +1,126 @@
+server:
+  name: go-admin
+  port: 8083
+  secure: false
+  key: "configs/key.pem"
+  cert: "configs/cert.pem"
+allow:
+  origins: http://localhost:3000
+  credentials: true
+  methods: GET,PUT,POST,DELETE,OPTIONS,PATCH
+  headers: Access-Control-Allow-Headers,Authorization,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers
+security_skip: false
+template: true
+
+log:
+  level: info
+  duration: duration
+  fields: app,service,userId,username
+  goroutines: true
+
+middleware:
+  log: true
+  skips: /health,/authenticate
+  request: request
+  response: response
+  masks: userId,username
+  constants:
+    app: "backoffice"
+    service: back-office
+  map:
+    userId: userId
+    username: username
+
+ldap:
+  tls: true
+  insecure_skip_verify: true
+  server: fake-ldap-server:389
+  base_dn: dc=example,dc=com
+  display_name: displayName
+  users: test01,test02,kaka,zinedine.zidane,gareth.bale
+  timeout: 3000
+auth:
+  token:
+    secret: secretbackoffice
+    expires: 86400000
+  status:
+    timeout: -1
+    not_found: 0
+    fail: 0
+    success: 1
+    disabled: 2
+    error: 4
+  payload:
+    ip: ip
+    id: userId
+    username: username
+    email: email
+    user_type: roleId
+  user_status:
+    disable: I
+  query: select userId as id, username, email, displayName as displayname, language, dateformat, status from users where username = ?
+
+db:
+  driver: postgres
+  data_source_name: postgres://postgres:abcd1234@localhost/backoffice?sslmode=disable
+
+tracking:
+  user: userId
+  created_by: CreatedBy
+  created_at: CreatedAt
+  updated_by: UpdatedBy
+  updated_at: UpdatedAt
+action:
+  load: load
+  create: create
+  update: update
+  patch: patch
+  delete: delete
+
+code:
+  handler:
+    master: true
+    id: value
+    name: text
+  loader:
+    master: master
+    id: code
+    name: name
+    sequence: sequence
+    status: status
+    active: A
+role:
+  handler:
+    master: false
+    id: roleId
+    name: roleName
+  loader:
+    id: roleId
+    name: roleName
+    sequence: roleName
+    status: status
+    active: A
+
+auto_role_id: false
+auto_user_id: false
+
+audit_log:
+  log: true
+  db:
+    driver: postgres
+    data_source_name: postgres://postgres:abcd1234@localhost/backoffice?sslmode=disable
+  schema:
+    id: id
+    user: userid
+    ip: ip
+    resource: resource
+    action: action
+    timestamp: time
+    status: status
+    desc: remark
+  config:
+    user: userId
+    ip: ip
+    true: success
+    false: fail
+    goroutines: true

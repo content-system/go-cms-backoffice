@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mappers">
+  <select id="role">
+    select *
+    from roles
+    where
+    <if test="roleName != null">
+      roleName like #{roleName} and
+    </if>
+    <if test="status != null">
+      status in (#{status}) and
+    </if>
+    <if test="q != null">
+      (roleName like #{q} or roleId like #{q} or remark like #{q}) and
+    </if>
+    1 = 1
+    <if test="sort != null">
+      order by {sort}
+    </if>
+    <if test="sort == null">
+      order by roleId
+    </if>
+  </select>
+
+  <select id="user">
+    select *
+    from users
+    where
+    <if test="username != null">
+      username like #{username} and
+    </if>
+    <if test="displayName != null">
+      displayName like #{displayName} and
+    </if>
+    <if test="status != null">
+      status in (#{status}) and
+    </if>
+    <if test="q != null">
+      (username like #{q} or displayName like #{q} or email like #{q}) and
+    </if>
+    1 = 1
+    <if test="sort != null">
+      order by {sort}
+    </if>
+    <if test="sort == null">
+      order by userId
+    </if>
+  </select>
+
+  <select id="audit_log">
+    select ${fields}
+    from auditlog
+    where
+    <if test="time.min != null">
+      time >= #{time.min} and
+    </if>
+    <if test="time.max != null">
+      time <= #{time.max} and
+    </if>
+    <if test="users != null">
+      userId in (#{users}) and
+    </if>
+    <if test="userId != null">
+      userId = #{userId} and
+    </if>
+    <if test="resources != null">
+      resource in (#{resources}) and
+    </if>
+    <if test="resource != null">
+      resource = #{resource} and
+    </if>
+    <if test="actions != null">
+      action in (#{actions}) and
+    </if>
+    <if test="action != null">
+      action = #{action} and
+    </if>
+    <if test="ip != null">
+      ip = #{ip} and
+    </if>
+    <if test="status != null">
+      status in (#{status}) and
+    </if>
+    1 = 1
+    <if test="sort != null">
+      order by {sort}
+    </if>
+    <if test="sort == null">
+      order by time desc
+    </if>
+  </select>
+</mapper>

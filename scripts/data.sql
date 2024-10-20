@@ -83,7 +83,8 @@ insert into modules (module_id,module_name,status,path,resource_key,icon,sequenc
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('audit_log','Audit Log','A','/audit-logs','audit_log','zoom_in',4,1,'admin');
 
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('article','Article','A','/articles','article','public',1,7,'setup');
-insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('job','Job','A','/jobs','job','local_atm',1,7,'setup');
+insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('job','Job','A','/jobs','job','local_atm',2,7,'setup');
+insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('contact','Contact','A','/contacts','contact','contacts',3,7,'setup');
 
 insert into roles (role_id, role_name, status, remark) values ('admin','Admin','A','Admin');
 insert into roles (role_id, role_name, status, remark) values ('call_center','Call Center','A','Call Center');
@@ -161,6 +162,7 @@ insert into role_modules(role_id, module_id, permissions) values ('it_support', 
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'setup', 7);
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'article', 7);
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'job', 7);
+insert into role_modules(role_id, module_id, permissions) values ('it_support', 'contact', 7);
 
 INSERT INTO audit_logs(id, resource, user_id, ip, "action", "time", status, remark) values('6xydt3Qap', 'authentication', '00005', '188.239.138.226', 'authenticate', '2023-07-02 21:00:06.811', 'success', '');
 INSERT INTO audit_logs(id, resource, user_id, ip, "action", "time", status, remark) values('gRAIVh1tM', 'term', '00005', '188.239.138.226', 'patch', '2023-07-03 12:09:51.659', 'success', '');

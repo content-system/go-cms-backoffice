@@ -24,6 +24,7 @@ import (
 
 	a "go-service/internal/article"
 	"go-service/internal/audit-log"
+	c "go-service/internal/contact"
 	j "go-service/internal/job"
 	r "go-service/internal/role"
 	u "go-service/internal/user"
@@ -47,6 +48,7 @@ type ApplicationContext struct {
 	Settings             *se.Handler
 	Article              a.ArticleTransport
 	Job                  j.JobTransport
+	Contact              c.ContactTransport
 }
 
 func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
@@ -143,6 +145,11 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
+	contactHandler, err := c.NewContactTransport(db, logError, writeLog, cfg.Action)
+	if err != nil {
+		return nil, err
+	}
+
 	reportDB, er8 := q.Open(cfg.AuditLog.DB)
 	if er8 != nil {
 		return nil, er8
@@ -174,6 +181,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		Settings:             settingsHandler,
 		Article:              articleHandler,
 		Job:                  jobHandler,
+		Contact:              contactHandler,
 	}
 	return app, nil
 }

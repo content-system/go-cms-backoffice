@@ -15,6 +15,7 @@ const (
 	user      = "user"
 	article   = "article"
 	job       = "job"
+	contact   = "contact"
 	audit_log = "audit_log"
 )
 
@@ -70,6 +71,14 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Update, job, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Patch, job, c.ActionWrite, c.PATCH)
 	HandleWithSecurity(sec, jobs, "/{jobId}", app.Job.Delete, job, c.ActionWrite, c.DELETE)
+
+	contacts := r.PathPrefix("/contacts").Subrouter()
+	HandleWithSecurity(sec, contacts, "/search", app.Contact.Search, contact, c.ActionRead, c.GET, c.POST)
+	HandleWithSecurity(sec, contacts, "/{contactId}", app.Contact.Load, contact, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, contacts, "", app.Contact.Create, contact, c.ActionWrite, c.POST)
+	HandleWithSecurity(sec, contacts, "/{contactId}", app.Contact.Update, contact, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, contacts, "/{contactId}", app.Contact.Patch, contact, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, contacts, "/{contactId}", app.Contact.Delete, contact, c.ActionWrite, c.DELETE)
 
 	HandleWithSecurity(sec, r, "/audit-logs", app.AuditLog.Search, audit_log, c.ActionRead, c.GET, c.POST)
 	HandleWithSecurity(sec, r, "/audit-logs/search", app.AuditLog.Search, audit_log, c.ActionRead, c.GET, c.POST)

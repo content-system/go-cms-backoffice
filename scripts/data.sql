@@ -300,26 +300,27 @@ INSERT INTO news (id,title,description,"content",published_at,tags,thumbnail,hig
 	 ('20240530001','FPT Issues First-Ever Environmental Policy, Strengthening Sustainable Commitment','This policy provides a detailed plan for implementing specific steps to reduce greenhouse gas (GHG) emissions, aiming at becoming Vietnam''s pioneering company to achieve Net Zero emissions by 2040.','This policy provides a detailed plan for implementing specific steps to reduce greenhouse gas (GHG) emissions, aiming at becoming Vietnam''s pioneering company to achieve Net Zero emissions by 2040.','2024-05-30 17:25:05.967+07','{}','https://fptsoftware.com/-/media/project/fpt-software/fso/newsroom/news---press-release/fpt-issues-first-ever-environmental-policy.webp','https://fptsoftware.com/-/media/project/fpt-software/fso/newsroom/news---press-release/fpt-issues-first-ever-environmental-policy.webp','A');
 
 CREATE TABLE jobs (
-	id character varying(40) NOT NULL PRIMARY KEY,
-	title character varying(300),
-	description character varying(2000),
-	published_at timestamp(6) with time zone,
-	expired_at timestamp(6) with time zone,
-	quantity bigint DEFAULT 0,
-	applicant_count bigint DEFAULT 0,
-	requirements character varying(2000),
-	benefit character varying(1000),
-	company_id character varying(40) NOT NULL,
-	skill character varying
+  id character varying(40) not null primary key,
+  title character varying(300),
+  description character varying(2000),
+  published_at timestamptz,
+  expired_at timestamptz,
+  location character varying(1000),
+  quantity integer default 1,
+  applicant_count integer default 1,
+  requirements character varying(2000),
+  benefit character varying(1000),
+  skills character varying[],
+  company_id character varying(40)
 );
 
-INSERT INTO jobs VALUES ('senior-backend-developer', 'Senior Backend Developer (Java, Kotlin, MySQL)', '• Analyze and organize raw data
+INSERT INTO jobs(id, title, description, published_at, expired_at, location, quantity, applicant_count, requirements, benefit, company_id)  VALUES ('senior-backend-developer', 'Senior Backend Developer (Java, Kotlin, MySQL)', '• Analyze and organize raw data
 • Build data systems and pipelines
 • Prepare data for prescriptive and predictive modeling
 • Combine raw information from different sources
 • Explore ways to enhance data quality and reliability
 • Identify opportunities for data acquisition
-• Data pipeline maintenance/testing.', '2023-05-24 17:00:00+00', '2023-05-29 17:00:00+00', 1, 1, 'asdsadasd', 'Analyze and organize raw data
+• Data pipeline maintenance/testing.', '2023-05-24 17:00:00+00', '2023-05-29 17:00:00+00', 'Hanoi', 1, 1, 'asdsadasd', 'Analyze and organize raw data
 
 Build data systems and pipelines
 
@@ -328,8 +329,8 @@ Prepare data for prescriptive and predictive modeling
 Combine raw information from different sources
 Explore ways to enhance data quality and reliability
 Identify opportunities for data acquisition
-Data pipeline maintenance/testing.', 'mb-bank', '["java"]');
-INSERT INTO jobs VALUES ('business-analyst-jp', 'Business Analyst (Japanese)', 'Previous experience as a data engineer or in a similar role
+Data pipeline maintenance/testing.', 'mb-bank');
+INSERT INTO jobs(id, title, description, published_at, expired_at, location, quantity, applicant_count, requirements, benefit, company_id) VALUES ('business-analyst-jp', 'Business Analyst (Japanese)', 'Previous experience as a data engineer or in a similar role
 
 Technical expertise with data models, data mining, and segmentation techniques
 
@@ -341,16 +342,16 @@ Great numerical and analytical skills
 Degree in Computer Science, IT, or similar field; a Masters is a plus
 
 Data engineering certification (e.g IBM Certified Data Engineer) is a plus
-', '2023-05-24 17:00:00+00', '2023-05-30 17:00:00+00', 1, 2, '<ul style="padding: 0px 0px 0px 2rem; margin-right: 0px; margin-bottom: 1rem; margin-left: 0px; color: rgb(58, 58, 58); font-family: Roboto, sans-serif; font-size: 16px; letter-spacing: normal;"><li>Previous experience as a data engineer or in a similar role</li><li>Technical expertise with data models, data mining, and segmentation techniques</li><li>Knowledge of programming languages (e.g. Java and Python)</li><li>Experience with data architecture and data modeling</li><li>Hands-on experience with SQL database design</li><li>Great numerical and analytical skills</li><li>Degree in Computer Science, IT, or similar field; a Masters is a plus</li><li>Data engineering certification (e.g IBM Certified Data Engineer) is a plus</li></ul>', '• • • Previous experience as a data engineer or in a similar role
+', '2023-05-24 17:00:00+00', '2023-05-30 17:00:00+00', 'Danang', 1, 2, '<ul style="padding: 0px 0px 0px 2rem; margin-right: 0px; margin-bottom: 1rem; margin-left: 0px; color: rgb(58, 58, 58); font-family: Roboto, sans-serif; font-size: 16px; letter-spacing: normal;"><li>Previous experience as a data engineer or in a similar role</li><li>Technical expertise with data models, data mining, and segmentation techniques</li><li>Knowledge of programming languages (e.g. Java and Python)</li><li>Experience with data architecture and data modeling</li><li>Hands-on experience with SQL database design</li><li>Great numerical and analytical skills</li><li>Degree in Computer Science, IT, or similar field; a Masters is a plus</li><li>Data engineering certification (e.g IBM Certified Data Engineer) is a plus</li></ul>', '• • • Previous experience as a data engineer or in a similar role
 • • • Technical expertise with data models, data mining, and segmentation techniques
 • • • Knowledge of programming languages (e.g. Java and Python)
-• • • Experience with data architecture and data modeling', 'mb-bank', '["BA"]');
-INSERT INTO jobs VALUES ('senior-devops-engineer', 'Senior DevOps Engineer - Salary Up to $2800', '1. Collaborate with Front-End Developers to integrate user-facing elements with server-side logic and other applications APIs;
+• • • Experience with data architecture and data modeling', 'mb-bank');
+INSERT INTO jobs(id, title, description, published_at, expired_at, location, quantity, applicant_count, requirements, benefit, company_id) VALUES ('senior-devops-engineer', 'Senior DevOps Engineer - Salary Up to $2800', '1. Collaborate with Front-End Developers to integrate user-facing elements with server-side logic and other applications APIs;
 2. Maintain and improve running-functionality as well as design and develop new system, new feature; d
 3. Develop and maintain Back-End Code that improves analytical and statistical modeling and forecasting methods to support business tribes in their decision-making process;
 4. Create data structures from scratch;
 5. Actively test and debug code defect;
-6. Research to learn technology and knowledge needed to develop products for the global market.', '2023-05-24 17:00:00+00', '2023-05-30 17:00:00+00', 1, 1, '1. Analyze and organize raw data
+6. Research to learn technology and knowledge needed to develop products for the global market.', '2023-05-24 17:00:00+00', '2023-05-30 17:00:00+00', 'Cantho', 1, 1, '1. Analyze and organize raw data
 2. Build data systems and pipelines
 3. Prepare data for prescriptive and predictive modeling
 4. Combine raw information from different sources
@@ -363,4 +364,14 @@ INSERT INTO jobs VALUES ('senior-devops-engineer', 'Senior DevOps Engineer - Sal
 5. Explore ways to enhance data quality and reliability
 6. Identify opportunities for data acquisition
 7. Data pipeline maintenance/testing.
-8. ', 'mb-bank', '["java","nodejs"]');
+8. ', 'mb-bank');
+
+CREATE TABLE companies (
+  id character varying(40) not null primary key,
+  name character varying(300),
+  description character varying(2000),
+  slogan character varying(300),
+  image_url varchar(500),
+  cover_url varchar(500),
+  sequence integer
+);

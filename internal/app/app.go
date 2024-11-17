@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/core-go/authentication"
 	ah "github.com/core-go/authentication/handler"
@@ -10,6 +11,7 @@ import (
 	"github.com/core-go/core/authorization"
 	"github.com/core-go/core/code"
 	"github.com/core-go/core/health"
+	hs "github.com/core-go/core/health/sql"
 	se "github.com/core-go/core/settings"
 	"github.com/core-go/core/shortid"
 	ur "github.com/core-go/core/user"
@@ -52,11 +54,11 @@ type ApplicationContext struct {
 }
 
 func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
-	db, er0 := q.Open(cfg.DB)
+	db, er0 := sql.Open(cfg.DB.Driver, cfg.DB.DataSourceName)
 	if er0 != nil {
 		return nil, er0
 	}
-	sqlHealthChecker := q.NewHealthChecker(db)
+	sqlHealthChecker := hs.NewHealthChecker(db)
 	var healthHandler *health.Handler
 
 	logError := log.LogError
@@ -64,13 +66,13 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	var writeLog func(ctx context.Context, resource string, action string, success bool, desc string) error
 
 	if cfg.AuditLog.Log {
-		auditLogDB, er1 := q.Open(cfg.AuditLog.DB)
+		auditLogDB, er1 := sql.Open(cfg.AuditLog.DB.Driver, cfg.AuditLog.DB.DataSourceName)
 		if er1 != nil {
 			return nil, er1
 		}
 		logWriter := sa.NewActionLogWriter(auditLogDB, "auditlog", cfg.AuditLog.Config, cfg.AuditLog.Schema, generateId)
 		writeLog = logWriter.Write
-		auditLogHealthChecker := q.NewSqlHealthChecker(auditLogDB, "audit_log")
+		auditLogHealthChecker := hs.NewSqlHealthChecker(auditLogDB, "audit_log")
 		healthHandler = health.NewHandler(sqlHealthChecker, auditLogHealthChecker)
 	} else {
 		healthHandler = health.NewHandler(sqlHealthChecker)
@@ -150,7 +152,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	reportDB, er8 := q.Open(cfg.AuditLog.DB)
+	reportDB, er8 := sql.Open(cfg.AuditLog.DB.Driver, cfg.AuditLog.DB.DataSourceName)
 	if er8 != nil {
 		return nil, er8
 	}

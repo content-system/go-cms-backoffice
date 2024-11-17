@@ -9,7 +9,7 @@ allow:
   credentials: true
   methods: GET,PUT,POST,DELETE,OPTIONS,PATCH
   headers: Access-Control-Allow-Headers,Authorization,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers
-security_skip: false
+security_skip: true
 template: true
 
 log:
@@ -58,11 +58,11 @@ auth:
     user_type: roleId
   user_status:
     disable: I
-  query: select user_id as id, username, email, display_name as displayname, language, dateformat, status from users where username = ?
+  query: select userId as id, username, email, displayName as displayname, language, dateformat, status from users where username = ?
 
 db:
   driver: postgres
-  data_source_name: postgres://postgres:abcd1234@localhost/cms5?sslmode=disable
+  data_source_name: postgres://postgres:abcd1234@localhost/cms?sslmode=disable
 
 tracking:
   user: userId
@@ -95,9 +95,9 @@ role:
     id: roleId
     name: roleName
   loader:
-    id: role_id
-    name: role_name
-    sequence: role_name
+    id: roleId
+    name: roleName
+    sequence: roleName
     status: status
     active: A
 
@@ -108,7 +108,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/cms5?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms?sslmode=disable
   schema:
     id: id
     user: userid

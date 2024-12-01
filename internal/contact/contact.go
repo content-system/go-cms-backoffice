@@ -13,5 +13,5 @@ type Contact struct {
 	Message     string     `yaml:"message" mapstructure:"message" json:"message" gorm:"column:message" bson:"message" dynamodbav:"message" firestore:"message" avro:"message" validate:"required,max=400"`
 	SubmittedAt *time.Time `yaml:"submitted_at" json:"submittedAt,omitempty" gorm:"column:submitted_at" bson:"submittedAt,omitempty" dynamodbav:"submittedAt,omitempty" firestore:"submittedAt,omitempty"`
 	ContactedAt *time.Time `yaml:"contacted_at" json:"contactedAt,omitempty" gorm:"column:contacted_at" bson:"contactedAt,omitempty" dynamodbav:"contactedAt,omitempty" firestore:"contactedAt,omitempty"`
-	ContactedBy *time.Time `yaml:"contacted_by" json:"contactedBy,omitempty" gorm:"column:contacted_by" bson:"contactedBy,omitempty" dynamodbav:"contactedBy,omitempty" firestore:"contactedBy,omitempty"`
+	ContactedBy *string    `yaml:"contacted_by" json:"contactedBy,omitempty" gorm:"column:contacted_by" bson:"contactedBy,omitempty" dynamodbav:"contactedBy,omitempty" firestore:"contactedBy,omitempty"`
 }

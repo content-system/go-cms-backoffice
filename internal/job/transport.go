@@ -27,7 +27,7 @@ func NewJobTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, acti
 		return nil, err
 	}
 	queryJob := builder.UseQuery[Job, *JobFilter](db, "jobs")
-	jobSearchBuilder, err := adapter.NewSearchAdapterWithArray[Job, string, *JobFilter](db, "jobs", queryJob, pq.Array, "", nil)
+	jobSearchBuilder, err := adapter.NewSearchAdapterWithArray[Job, string, *JobFilter](db, "jobs", queryJob, pq.Array)
 	if err != nil {
 		return nil, err
 	}

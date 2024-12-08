@@ -27,7 +27,7 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 		return nil, err
 	}
 	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "news")
-	articleSearchBuilder, err := adapter.NewSearchAdapterWithArray[Article, string, *ArticleFilter](db, "news", queryArticle, pq.Array, "", nil)
+	articleSearchBuilder, err := adapter.NewSearchAdapterWithArray[Article, string, *ArticleFilter](db, "news", queryArticle, pq.Array)
 	if err != nil {
 		return nil, err
 	}

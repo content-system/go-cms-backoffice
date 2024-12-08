@@ -84,7 +84,7 @@ insert into modules (module_id,module_name,status,path,resource_key,icon,sequenc
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('audit_log','Audit Log','A','/audit-logs','audit_log','zoom_in',4,1,'admin');
 
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('article','Article','A','/articles','article','public',1,7,'setup');
-insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('job','Job','A','/countries','jobs','local_atm',2,7,'setup');
+insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('job','Job','A','/jobs','jobs','local_atm',2,7,'setup');
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('contact','Contact','A','/contacts','contact','public',1,7,'setup');
 
 insert into roles (role_id, role_name, status, remark) values ('admin','Admin','A','Admin');

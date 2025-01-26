@@ -26,12 +26,12 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
-	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "news")
-	articleSearchBuilder, err := adapter.NewSearchAdapterWithArray[Article, string, *ArticleFilter](db, "news", queryArticle, pq.Array)
+	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "articles")
+	articleSearchBuilder, err := adapter.NewSearchAdapterWithArray[Article, string, *ArticleFilter](db, "articles", queryArticle, pq.Array)
 	if err != nil {
 		return nil, err
 	}
-	articleRepository, err := adapter.NewAdapterWithArray[Article, string](db, "news", pq.Array)
+	articleRepository, err := adapter.NewAdapterWithArray[Article, string](db, "articles", pq.Array)
 	if err != nil {
 		return nil, err
 	}

@@ -16,4 +16,5 @@ type JobFilter struct {
 	Quantity       *int32            `json:"quantity,omitempty" gorm:"column:quantity" dynamodbav:"quantity,omitempty" firestore:"quantity,omitempty"`
 	ApplicantCount *int32            `json:"applicantCount,omitempty" gorm:"column:applicant_count" dynamodbav:"applicantCount,omitempty" firestore:"applicantCount,omitempty"`
 	CompanyId      string            `json:"companyId,omitempty" gorm:"column:company_id" dynamodbav:"companyid,omitempty" firestore:"companyid,omitempty"`
+	// Status         []string          `json:"status,omitempty" gorm:"column:status" bson:"status,omitempty" dynamodbav:"status,omitempty" firestore:"status,omitempty" match:"equal" validate:"required,max=1,code"`
 }

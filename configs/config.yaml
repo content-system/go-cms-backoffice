@@ -92,8 +92,8 @@ code:
 role:
   handler:
     master: false
-    id: role_id
-    name: role_name
+    id: roleId
+    name: roleName
   loader:
     id: role_id
     name: role_name

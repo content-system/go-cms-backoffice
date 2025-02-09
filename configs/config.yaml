@@ -92,12 +92,12 @@ code:
 role:
   handler:
     master: false
-    id: roleId
-    name: roleName
+    id: role_id
+    name: role_name
   loader:
-    id: roleId
-    name: roleName
-    sequence: roleName
+    id: role_id
+    name: role_name
+    sequence: role_name
     status: status
     active: A
 
@@ -111,7 +111,7 @@ audit_log:
     data_source_name: postgres://postgres:abcd1234@localhost/cms?sslmode=disable
   schema:
     id: id
-    user: userid
+    user: user_id
     ip: ip
     resource: resource
     action: action

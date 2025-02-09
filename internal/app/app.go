@@ -70,9 +70,9 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		if er1 != nil {
 			return nil, er1
 		}
-		logWriter := sa.NewActionLogWriter(auditLogDB, "auditlog", cfg.AuditLog.Config, cfg.AuditLog.Schema, generateId)
+		logWriter := sa.NewActionLogWriter(auditLogDB, "audit_logs", cfg.AuditLog.Config, cfg.AuditLog.Schema, generateId)
 		writeLog = logWriter.Write
-		auditLogHealthChecker := hs.NewSqlHealthChecker(auditLogDB, "audit_log")
+		auditLogHealthChecker := hs.NewSqlHealthChecker(auditLogDB, "audit_logs")
 		healthHandler = health.NewHandler(sqlHealthChecker, auditLogHealthChecker)
 	} else {
 		healthHandler = health.NewHandler(sqlHealthChecker)
@@ -110,7 +110,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	privilegeHandler := p.NewPrivilegesHandler(privilegeReader.Privileges, privilegePort.Load, logError, "userId")
 
 	// codeLoader := code.NewDynamicSqlCodeLoader(db, "select code, name, status as text from codeMaster where master = ? and status = 'A'", 1)
-	codeLoader, err := code.NewSqlCodeLoader(db, "code_master", cfg.Code.Loader)
+	codeLoader, err := code.NewSqlCodeLoader(db, "code_masters", cfg.Code.Loader)
 	if err != nil {
 		return nil, err
 	}

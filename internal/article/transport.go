@@ -2,14 +2,12 @@ package article
 
 import (
 	"database/sql"
+	"github.com/lib/pq"
 	"net/http"
 
 	"github.com/core-go/core"
-	sv "github.com/core-go/core/sql"
 	v "github.com/core-go/core/validator"
-	"github.com/core-go/sql/adapter"
 	"github.com/core-go/sql/query/builder"
-	"github.com/lib/pq"
 )
 
 type ArticleTransport interface {
@@ -27,15 +25,11 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 		return nil, err
 	}
 	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "articles")
-	articleSearchBuilder, err := adapter.NewSearchAdapterWithArray[Article, string, *ArticleFilter](db, "articles", queryArticle, pq.Array)
+	articleRepository, err := NewArticleAdapter(db, queryArticle, pq.Array)
 	if err != nil {
 		return nil, err
 	}
-	articleRepository, err := adapter.NewAdapterWithArray[Article, string](db, "articles", pq.Array)
-	if err != nil {
-		return nil, err
-	}
-	articleService := sv.NewService[Article, string](db, articleRepository)
-	articleHandler := NewArticleHandler(articleSearchBuilder.Search, articleService, logError, validator.Validate, writeLog, action)
+	articleService := NewArticleService(articleRepository)
+	articleHandler := NewArticleHandler(articleService, logError, validator.Validate, action)
 	return articleHandler, nil
 }

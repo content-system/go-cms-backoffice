@@ -12,6 +12,7 @@ type ArticleService interface {
 	Update(ctx context.Context, article *Article) (int64, error)
 	Patch(ctx context.Context, article map[string]interface{}) (int64, error)
 	Delete(ctx context.Context, id string) (int64, error)
+	Search(ctx context.Context, filter *ArticleFilter, limit int64, offset int64) ([]Article, int64, error)
 }
 
 func NewArticleService(repository ArticleRepository) *ArticleUseCase {
@@ -45,4 +46,7 @@ func (s *ArticleUseCase) Delete(ctx context.Context, id string) (int64, error) {
 	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
 		return s.repository.Delete(ctx, id)
 	})
+}
+func (s *ArticleUseCase) Search(ctx context.Context, filter *ArticleFilter, limit int64, offset int64) ([]Article, int64, error) {
+	return s.repository.Search(ctx, filter, limit, offset)
 }

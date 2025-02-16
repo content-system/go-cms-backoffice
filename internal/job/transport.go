@@ -5,9 +5,7 @@ import (
 	"net/http"
 
 	"github.com/core-go/core"
-	sv "github.com/core-go/core/sql"
 	v "github.com/core-go/core/validator"
-	"github.com/core-go/sql/adapter"
 	"github.com/core-go/sql/query/builder"
 	"github.com/lib/pq"
 )
@@ -27,15 +25,11 @@ func NewJobTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, acti
 		return nil, err
 	}
 	queryJob := builder.UseQuery[Job, *JobFilter](db, "jobs")
-	jobSearchBuilder, err := adapter.NewSearchAdapterWithArray[Job, string, *JobFilter](db, "jobs", queryJob, pq.Array)
+	jobRepository, err := NewJobAdapter(db, queryJob, pq.Array)
 	if err != nil {
 		return nil, err
 	}
-	jobRepository, err := adapter.NewAdapterWithArray[Job, string](db, "jobs", pq.Array)
-	if err != nil {
-		return nil, err
-	}
-	jobService := sv.NewService[Job, string](db, jobRepository)
-	jobHandler := NewJobHandler(jobSearchBuilder.Search, jobService, logError, validator.Validate, writeLog, action)
+	jobService := NewJobService(jobRepository)
+	jobHandler := NewJobHandler(jobService, logError, validator.Validate, action)
 	return jobHandler, nil
 }

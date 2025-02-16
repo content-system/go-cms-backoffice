@@ -2,12 +2,11 @@ package contact
 
 import (
 	"database/sql"
-	"github.com/core-go/core"
-	sv "github.com/core-go/core/sql"
-	v "github.com/core-go/core/validator"
-	"github.com/core-go/sql/adapter"
-	"github.com/core-go/sql/query/builder"
 	"net/http"
+
+	"github.com/core-go/core"
+	v "github.com/core-go/core/validator"
+	"github.com/core-go/sql/query/builder"
 )
 
 type ContactTransport interface {
@@ -25,15 +24,11 @@ func NewContactTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 		return nil, err
 	}
 	queryContact := builder.UseQuery[Contact, *ContactFilter](db, "contacts")
-	contactSearchBuilder, err := adapter.NewSearchAdapter[Contact, string, *ContactFilter](db, "contacts", queryContact)
+	contactRepository, err := NewContactAdapter(db, queryContact)
 	if err != nil {
 		return nil, err
 	}
-	contactRepository, err := adapter.NewAdapter[Contact, string](db, "contacts")
-	if err != nil {
-		return nil, err
-	}
-	contactService := sv.NewService[Contact, string](db, contactRepository)
-	contactHandler := NewContactHandler(contactSearchBuilder.Search, contactService, logError, validator.Validate, writeLog, action)
+	contactService := NewContactService(contactRepository)
+	contactHandler := NewContactHandler(contactService, logError, validator.Validate, action)
 	return contactHandler, nil
 }

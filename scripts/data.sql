@@ -1,10 +1,10 @@
 create table code_masters (
-    master varchar(100) not null,
-    code varchar(100) not null,
-    name varchar(100),
-    sequence int8,
-    status char(1),
-    primary key (master, code)
+  master varchar(100) not null,
+  code varchar(100) not null,
+  name varchar(100),
+  sequence int8,
+  status char(1),
+  primary key (master, code)
 );
 create table modules (
   module_id varchar(40) primary key,
@@ -42,14 +42,14 @@ create table users (
   updated_at timestamptz
 );
 create table passwords (
-    user_id varchar(40) primary key,
-    password varchar(255),
-    success_time timestamptz,
-    fail_time timestamptz,
-    fail_count integer,
-    locked_until_time timestamptz,
-    changed_time timestamptz,
-    history character varying[]
+  user_id varchar(40) primary key,
+  password varchar(255),
+  success_time timestamptz,
+  fail_time timestamptz,
+  fail_count integer,
+  locked_until_time timestamptz,
+  changed_time timestamptz,
+  history character varying[]
 );
 create table passcodes (
   id varchar(40) primary key,
@@ -150,8 +150,8 @@ insert into users (user_id,username,email,display_name,image_url,status,gender,p
 update users set language = 'en', dateformat = 'd/M/yyyy';
 
 insert into passwords(user_id, password)
-select user_id, '$2b$10$LWBgFYSRFpw/lysdne3ybuODJRAk1/qi2z.nhu9fXKA5vH/10AYY.'
-from users;
+select user_id, '$2b$10$LWBgFYSRFpw/lysdne3ybuODJRAk1/qi2z.nhu9fXKA5vH/10AYY.' from users;
+/* Password1! */
 
 insert into user_roles(user_id, role_id) values ('00001','admin');
 insert into user_roles(user_id, role_id) values ('00003','admin');

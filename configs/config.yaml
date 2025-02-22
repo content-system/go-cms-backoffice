@@ -108,7 +108,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/cms?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
   schema:
     id: id
     user: user_id

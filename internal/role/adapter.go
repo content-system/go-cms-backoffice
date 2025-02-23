@@ -29,7 +29,6 @@ type RoleAdapter struct {
 	db            *sql.DB
 	Driver        string
 	BuildParam    func(int) string
-	CheckDelete   string
 	keys          []string
 	jsonColumnMap map[string]string
 	Map           map[string]int
@@ -39,8 +38,7 @@ type RoleAdapter struct {
 	UserSchema    *q.Schema
 }
 
-func NewRoleAdapter(db *sql.DB, checkDelete string) (*RoleAdapter, error) {
-	sql := q.ReplaceQueryArgs(q.GetDriver(db), checkDelete)
+func NewRoleAdapter(db *sql.DB) (*RoleAdapter, error) {
 	roleMap, roleSchema, jsonColumnMap, keys, _, _, buildParam, driver, err := q.Init(reflect.TypeOf(Role{}), db)
 	if err != nil {
 		return nil, err
@@ -55,7 +53,6 @@ func NewRoleAdapter(db *sql.DB, checkDelete string) (*RoleAdapter, error) {
 			db:            db,
 			Driver:        driver,
 			BuildParam:    buildParam,
-			CheckDelete:   sql,
 			Map:           roleMap,
 			Schema:        roleSchema,
 			jsonColumnMap: jsonColumnMap,
@@ -140,7 +137,6 @@ func (s *RoleAdapter) Create(ctx context.Context, role *Role) (int64, error) {
 
 	return sts.Exec(ctx, s.db)
 }
-
 func (s *RoleAdapter) Update(ctx context.Context, role *Role) (int64, error) {
 	modules, err := buildModules(role.RoleId, role.Privileges)
 	if err != nil {
@@ -204,12 +200,11 @@ func (s *RoleAdapter) Patch(ctx context.Context, role map[string]interface{}) (i
 }
 
 func (s *RoleAdapter) Delete(ctx context.Context, id string) (int64, error) {
-	if len(s.CheckDelete) > 0 {
-		exist, er0 := checkExist(s.db, s.CheckDelete, id)
-		if exist || er0 != nil {
-			return -1, er0
-		}
+	exist, er0 := q.Exist(ctx, s.db, fmt.Sprintf("select user_id from user_roles where role_id = %s limit 1", s.BuildParam(1)), id)
+	if exist || er0 != nil {
+		return -1, er0
 	}
+
 	sts := q.NewStatements(false)
 
 	deleteModules := fmt.Sprintf("delete from role_modules where role_id = %s", s.BuildParam(1))
@@ -219,17 +214,6 @@ func (s *RoleAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	sts.Add(deleteRole, []interface{}{id})
 
 	return sts.Exec(ctx, s.db)
-}
-func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
-	rows, err := db.Query(sql, args...)
-	if err != nil {
-		return false, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		return true, nil
-	}
-	return false, nil
 }
 
 func (s *RoleAdapter) AssignRole(ctx context.Context, roleId string, users []string) (int64, error) {

@@ -8,7 +8,7 @@ require (
 	github.com/core-go/log v1.0.9
 	github.com/core-go/search v1.2.0
 	github.com/core-go/security v0.1.4
-	github.com/core-go/sql v0.6.4
+	github.com/core-go/sql v0.6.5
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 )

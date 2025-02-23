@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -126,24 +127,36 @@ func (s *UserAdapter) Update(ctx context.Context, user *User) (int64, error) {
 }
 
 func (s *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
-	objRoles := user["roles"]
+	objId, ok := user["userId"]
+	if !ok {
+		return -1, errors.New("userId must be in payload")
+	}
+	userId, ok2 := objId.(string)
+	if !ok2 {
+		return -1, errors.New("userId must be a string")
+	}
+	var roles []string
+	var ok4 bool
+	objPrivileges, ok3 := user["roles"]
+	if ok3 {
+		roles, ok4 = objPrivileges.([]string)
+	}
 	var sts q.Statements
-	delete(user, "roles")
-	if len(user) >= 2 {
+	if ok4 && len(user) > 2 || !ok4 && len(user) > 1 {
 		sts = q.NewStatements(true)
 		columnMap := q.JSONToColumns(user, s.jsonColumnMap)
 		sts.Add(q.BuildToPatch("users", columnMap, s.keys, s.BuildParam))
 	} else {
 		sts = q.NewStatements(false)
 	}
-	if objRoles != nil {
+	if ok4 {
 		deleteModules := fmt.Sprintf("delete from user_roles where user_id = %s", s.BuildParam(1))
-		sts.Add(deleteModules, []interface{}{user["userId"]})
-		roles, ok := objRoles.([]string)
+		sts.Add(deleteModules, []interface{}{userId})
 		if ok {
-			for i := 0; i < len(roles); i++ {
-				insertModules := fmt.Sprintf("insert into user_roles values (%s,%s)", s.BuildParam(1), s.BuildParam(2))
-				sts.Add(insertModules, []interface{}{user["userId"], roles[i]})
+			l := len(roles)
+			for i := 0; i < l; i++ {
+				insertModules := fmt.Sprintf("insert into user_roles(user_id, role_id) values (%s,%s)", s.BuildParam(1), s.BuildParam(2))
+				sts.Add(insertModules, []interface{}{userId, roles[i]})
 			}
 		}
 	}
@@ -152,7 +165,7 @@ func (s *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (i
 
 func (s *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	if len(s.CheckDelete) > 0 {
-		exist, er0 := checkExist(s.db, s.CheckDelete, id)
+		exist, er0 := q.Exist(ctx, s.db, s.CheckDelete, id)
 		if exist || er0 != nil {
 			return -1, er0
 		}
@@ -166,17 +179,6 @@ func (s *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	sts.Add(deleteRole, []interface{}{id})
 
 	return sts.Exec(ctx, s.db)
-}
-func checkExist(db *sql.DB, sql string, args ...interface{}) (bool, error) {
-	rows, err := db.Query(sql, args...)
-	if err != nil {
-		return false, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		return true, nil
-	}
-	return false, nil
 }
 
 func (s *UserAdapter) GetUserByRole(ctx context.Context, roleId string) ([]User, error) {

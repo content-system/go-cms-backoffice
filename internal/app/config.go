@@ -39,11 +39,7 @@ type DBConfig struct {
 	Driver         string `yaml:"driver" mapstructure:"driver" json:"driver,omitempty" gorm:"column:driver" bson:"driver,omitempty" dynamodbav:"driver,omitempty" firestore:"driver,omitempty"`
 }
 type SqlStatement struct {
-	Privileges        string        `mapstructure:"privileges"`
-	PrivilegesByUser  string        `mapstructure:"privileges_by_user"`
-	PermissionsByUser string        `mapstructure:"permissions_by_user"`
-	Role              RoleStatement `mapstructure:"role"`
-}
-type RoleStatement struct {
-	Check string `mapstructure:"check"`
+	Privileges        string `mapstructure:"privileges"`
+	PrivilegesByUser  string `mapstructure:"privileges_by_user"`
+	PermissionsByUser string `mapstructure:"permissions_by_user"`
 }

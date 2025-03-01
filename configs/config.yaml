@@ -48,8 +48,11 @@ auth:
     not_found: 0
     fail: 0
     success: 1
-    disabled: 2
-    error: 4
+    password_expired: 3
+    locked: 4
+    suspended: 5
+    disabled: 6
+    error: 7
   payload:
     ip: ip
     id: userId
@@ -57,8 +60,17 @@ auth:
     email: email
     user_type: roleId
   user_status:
-    disable: I
-  query: select user_id as id, username, email, display_name as displayname, language, dateformat, status from users where username = ?
+    activated: A
+    deactivated: I
+    disable: D
+    suspended: S
+  query: |
+    select u.user_id as id, u.username, u.display_name as displayname, email, u.status, u.max_password_age as maxpasswordage, 
+      p.password, p.success_time as successtime, p.fail_time as failtime, p.fail_count as failcount, p.locked_until_time as lockeduntiltime, p.changed_time as passwordchangedtime
+    from users u
+    inner join passwords p
+      on u.user_id = p.user_id
+    where username = ?
 
 db:
   driver: postgres
@@ -108,7 +120,7 @@ audit_log:
   log: true
   db:
     driver: postgres
-    data_source_name: postgres://postgres:abcd1234@localhost/cms3?sslmode=disable
+    data_source_name: postgres://postgres:abcd1234@localhost/cms?sslmode=disable
   schema:
     id: id
     user: user_id

@@ -113,7 +113,7 @@ func (r *JobAdapter) Search(ctx context.Context, filter *JobFilter, limit int64,
 		return jobs, total, err
 	}
 
-	err = s.Query(ctx, r.DB, r.Map, &jobs, pagingQuery, params...)
+	err = s.QueryWithArray(ctx, r.DB, r.Map, &jobs, r.Array, pagingQuery, params...)
 	return jobs, total, err
 }
 

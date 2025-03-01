@@ -113,7 +113,7 @@ func (r *ArticleAdapter) Search(ctx context.Context, filter *ArticleFilter, limi
 		return articles, total, err
 	}
 
-	err = s.Query(ctx, r.DB, r.Map, &articles, pagingQuery, params...)
+	err = s.QueryWithArray(ctx, r.DB, r.Map, &articles, r.Array, pagingQuery, params...)
 	return articles, total, err
 }
 

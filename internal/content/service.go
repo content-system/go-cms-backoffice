@@ -16,8 +16,8 @@ type ContentService interface {
 	Search(ctx context.Context, filter *ContentFilter, limit int64, offset int64) ([]Content, int64, error)
 }
 
-func NewContentService(repository ContentRepository) *ContentUseCase {
-	return &ContentUseCase{repository: repository}
+func NewContentService(db *sql.DB, repository ContentRepository) *ContentUseCase {
+	return &ContentUseCase{db: db, repository: repository}
 }
 
 type ContentUseCase struct {

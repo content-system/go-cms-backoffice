@@ -59,11 +59,11 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 
 	contents := r.PathPrefix("/contents").Subrouter()
 	HandleWithSecurity(sec, contents, "/search", app.Content.Search, content, c.ActionRead, c.GET, c.POST)
-	HandleWithSecurity(sec, contents, "/{id}", app.Content.Load, content, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, contents, "/{id}/{lang}", app.Content.Load, content, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, contents, "", app.Content.Create, content, c.ActionWrite, c.POST)
-	HandleWithSecurity(sec, contents, "/{id}", app.Content.Update, content, c.ActionWrite, c.PUT)
-	HandleWithSecurity(sec, contents, "/{id}", app.Content.Patch, content, c.ActionWrite, c.PATCH)
-	HandleWithSecurity(sec, contents, "/{id}", app.Content.Delete, content, c.ActionWrite, c.DELETE)
+	HandleWithSecurity(sec, contents, "/{id}/{lang}", app.Content.Update, content, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, contents, "/{id}/{lang}", app.Content.Patch, content, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, contents, "/{id}/{lang}", app.Content.Delete, content, c.ActionWrite, c.DELETE)
 
 	articles := r.PathPrefix("/articles").Subrouter()
 	HandleWithSecurity(sec, articles, "/search", app.Article.Search, article, c.ActionRead, c.GET, c.POST)
@@ -75,11 +75,11 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 
 	jobs := r.PathPrefix("/jobs").Subrouter()
 	HandleWithSecurity(sec, jobs, "/search", app.Job.Search, job, c.ActionRead, c.GET, c.POST)
-	HandleWithSecurity(sec, jobs, "/{id}/{lang}", app.Job.Load, job, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, jobs, "/{id}", app.Job.Load, job, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, jobs, "", app.Job.Create, job, c.ActionWrite, c.POST)
-	HandleWithSecurity(sec, jobs, "/{id}/{lang}", app.Job.Update, job, c.ActionWrite, c.PUT)
-	HandleWithSecurity(sec, jobs, "/{id}/{lang}", app.Job.Patch, job, c.ActionWrite, c.PATCH)
-	HandleWithSecurity(sec, jobs, "/{id}/{lang}", app.Job.Delete, job, c.ActionWrite, c.DELETE)
+	HandleWithSecurity(sec, jobs, "/{id}", app.Job.Update, job, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, jobs, "/{id}", app.Job.Patch, job, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, jobs, "/{id}", app.Job.Delete, job, c.ActionWrite, c.DELETE)
 
 	contacts := r.PathPrefix("/contacts").Subrouter()
 	HandleWithSecurity(sec, contacts, "/search", app.Contact.Search, contact, c.ActionRead, c.GET, c.POST)

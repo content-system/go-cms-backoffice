@@ -16,8 +16,8 @@ type ContactService interface {
 	Search(ctx context.Context, filter *ContactFilter, limit int64, offset int64) ([]Contact, int64, error)
 }
 
-func NewContactService(repository ContactRepository) *ContactUseCase {
-	return &ContactUseCase{repository: repository}
+func NewContactService(db *sql.DB, repository ContactRepository) *ContactUseCase {
+	return &ContactUseCase{db: db, repository: repository}
 }
 
 type ContactUseCase struct {

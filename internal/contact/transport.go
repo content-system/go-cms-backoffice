@@ -28,7 +28,7 @@ func NewContactTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
-	contactService := NewContactService(contactRepository)
+	contactService := NewContactService(db, contactRepository)
 	contactHandler := NewContactHandler(contactService, logError, validator.Validate, action)
 	return contactHandler, nil
 }

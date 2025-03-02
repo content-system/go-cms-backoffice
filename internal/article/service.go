@@ -16,8 +16,8 @@ type ArticleService interface {
 	Search(ctx context.Context, filter *ArticleFilter, limit int64, offset int64) ([]Article, int64, error)
 }
 
-func NewArticleService(repository ArticleRepository) *ArticleUseCase {
-	return &ArticleUseCase{repository: repository}
+func NewArticleService(db *sql.DB, repository ArticleRepository) *ArticleUseCase {
+	return &ArticleUseCase{db: db, repository: repository}
 }
 
 type ArticleUseCase struct {

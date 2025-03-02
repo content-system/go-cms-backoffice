@@ -9,10 +9,10 @@ import (
 	"github.com/core-go/search"
 )
 
-func NewContentHandler(service ContentService, logError core.Log, validate core.Validate[*Content], action *core.ActionConfig) *ContentHandler {
+func NewContentHandler(service ContentService, logError core.Log, validate core.Validate[*Content], writeLog core.WriteLog, action *core.ActionConfig) *ContentHandler {
 	contentType := reflect.TypeOf(Content{})
 	parameters := search.CreateParameters(reflect.TypeOf(ContentFilter{}), contentType)
-	attributes := core.CreateAttributes(contentType, logError, action)
+	attributes := core.CreateAttributes(contentType, logError, action, writeLog)
 	return &ContentHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

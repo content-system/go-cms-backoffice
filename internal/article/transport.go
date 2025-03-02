@@ -29,7 +29,7 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
-	articleService := NewArticleService(articleRepository)
+	articleService := NewArticleService(db, articleRepository)
 	articleHandler := NewArticleHandler(articleService, logError, validator.Validate, action)
 	return articleHandler, nil
 }

@@ -16,8 +16,8 @@ type JobService interface {
 	Search(ctx context.Context, filter *JobFilter, limit int64, offset int64) ([]Job, int64, error)
 }
 
-func NewJobService(repository JobRepository) *JobUseCase {
-	return &JobUseCase{repository: repository}
+func NewJobService(db *sql.DB, repository JobRepository) *JobUseCase {
+	return &JobUseCase{db: db, repository: repository}
 }
 
 type JobUseCase struct {

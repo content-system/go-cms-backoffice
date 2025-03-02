@@ -9,10 +9,10 @@ import (
 	"github.com/core-go/search"
 )
 
-func NewContactHandler(service ContactService, logError core.Log, validate core.Validate[*Contact], action *core.ActionConfig) *ContactHandler {
+func NewContactHandler(service ContactService, logError core.Log, validate core.Validate[*Contact], writeLog core.WriteLog, action *core.ActionConfig) *ContactHandler {
 	contactType := reflect.TypeOf(Contact{})
 	parameters := search.CreateParameters(reflect.TypeOf(ContactFilter{}), contactType)
-	attributes := core.CreateAttributes(contactType, logError, action)
+	attributes := core.CreateAttributes(contactType, logError, action, writeLog)
 	return &ContactHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

@@ -29,7 +29,7 @@ func NewContentTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
-	contentService := NewContentService(contentRepository)
-	contentHandler := NewContentHandler(contentService, logError, validator.Validate, action)
+	contentService := NewContentService(db, contentRepository)
+	contentHandler := NewContentHandler(contentService, logError, validator.Validate, writeLog, action)
 	return contentHandler, nil
 }

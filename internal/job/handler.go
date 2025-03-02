@@ -9,10 +9,10 @@ import (
 	"github.com/core-go/search"
 )
 
-func NewJobHandler(service JobService, logError core.Log, validate core.Validate[*Job], action *core.ActionConfig) *JobHandler {
+func NewJobHandler(service JobService, logError core.Log, validate core.Validate[*Job], writeLog core.WriteLog, action *core.ActionConfig) *JobHandler {
 	jobType := reflect.TypeOf(Job{})
 	parameters := search.CreateParameters(reflect.TypeOf(JobFilter{}), jobType)
-	attributes := core.CreateAttributes(jobType, logError, action)
+	attributes := core.CreateAttributes(jobType, logError, action, writeLog)
 	return &JobHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

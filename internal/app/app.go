@@ -27,6 +27,7 @@ import (
 	a "go-service/internal/article"
 	"go-service/internal/audit-log"
 	c "go-service/internal/contact"
+	co "go-service/internal/content"
 	j "go-service/internal/job"
 	r "go-service/internal/role"
 	u "go-service/internal/user"
@@ -48,6 +49,7 @@ type ApplicationContext struct {
 	User                 u.UserTransport
 	AuditLog             *audit.AuditLogHandler
 	Settings             *se.Handler
+	Content              co.ContentTransport
 	Article              a.ArticleTransport
 	Job                  j.JobTransport
 	Contact              c.ContactTransport
@@ -138,6 +140,11 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
+	contentHandler, err := co.NewContentTransport(db, logError, writeLog, cfg.Action)
+	if err != nil {
+		return nil, err
+	}
+
 	articleHandler, err := a.NewArticleTransport(db, logError, writeLog, cfg.Action)
 	if err != nil {
 		return nil, err
@@ -181,6 +188,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		User:                 userHandler,
 		AuditLog:             auditLogHandler,
 		Settings:             settingsHandler,
+		Content:              contentHandler,
 		Article:              articleHandler,
 		Job:                  jobHandler,
 		Contact:              contactHandler,

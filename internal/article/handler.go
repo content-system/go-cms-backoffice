@@ -49,10 +49,10 @@ func (h *ArticleHandler) Create(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if res > 0 {
-				h.Log(r.Context(), h.Resource, h.Action.Update, true, fmt.Sprintf("create '%s'", article.Id))
+				h.Log(r.Context(), h.Resource, h.Action.Create, true, fmt.Sprintf("%s '%s'", h.Action.Create, article.Id))
 				core.JSON(w, http.StatusCreated, article)
 			} else {
-				h.Log(r.Context(), h.Resource, h.Action.Update, false, fmt.Sprintf("conflict '%s'", article.Id))
+				h.Log(r.Context(), h.Resource, h.Action.Create, false, fmt.Sprintf("conflict '%s'", article.Id))
 				core.JSON(w, http.StatusConflict, res)
 			}
 		}

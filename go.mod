@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/core-go/authentication v0.3.8
-	github.com/core-go/core v1.2.9
+	github.com/core-go/core v1.0.5
 	github.com/core-go/log v1.0.9
 	github.com/core-go/search v1.2.0
 	github.com/core-go/security v0.1.4

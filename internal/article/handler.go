@@ -12,7 +12,7 @@ import (
 func NewArticleHandler(service ArticleService, logError core.Log, validate core.Validate[*Article], writeLog core.WriteLog, action *core.ActionConfig) *ArticleHandler {
 	articleType := reflect.TypeOf(Article{})
 	parameters := search.CreateParameters(reflect.TypeOf(ArticleFilter{}), articleType)
-	attributes := core.CreateAttributes(articleType, logError, action, writeLog)
+	attributes := core.CreateAttributes(articleType, logError, writeLog, action)
 	return &ArticleHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

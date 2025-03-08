@@ -12,7 +12,7 @@ import (
 func NewContentHandler(service ContentService, logError core.Log, validate core.Validate[*Content], writeLog core.WriteLog, action *core.ActionConfig) *ContentHandler {
 	contentType := reflect.TypeOf(Content{})
 	parameters := search.CreateParameters(reflect.TypeOf(ContentFilter{}), contentType)
-	attributes := core.CreateAttributes(contentType, logError, action, writeLog)
+	attributes := core.CreateAttributes(contentType, logError, writeLog, action)
 	return &ContentHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

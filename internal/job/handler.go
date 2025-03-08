@@ -12,7 +12,7 @@ import (
 func NewJobHandler(service JobService, logError core.Log, validate core.Validate[*Job], writeLog core.WriteLog, action *core.ActionConfig) *JobHandler {
 	jobType := reflect.TypeOf(Job{})
 	parameters := search.CreateParameters(reflect.TypeOf(JobFilter{}), jobType)
-	attributes := core.CreateAttributes(jobType, logError, action, writeLog)
+	attributes := core.CreateAttributes(jobType, logError, writeLog, action)
 	return &JobHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

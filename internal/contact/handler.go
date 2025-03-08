@@ -12,7 +12,7 @@ import (
 func NewContactHandler(service ContactService, logError core.Log, validate core.Validate[*Contact], writeLog core.WriteLog, action *core.ActionConfig) *ContactHandler {
 	contactType := reflect.TypeOf(Contact{})
 	parameters := search.CreateParameters(reflect.TypeOf(ContactFilter{}), contactType)
-	attributes := core.CreateAttributes(contactType, logError, action, writeLog)
+	attributes := core.CreateAttributes(contactType, logError, writeLog, action)
 	return &ContactHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
 }
 

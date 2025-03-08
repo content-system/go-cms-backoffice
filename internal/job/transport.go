@@ -30,6 +30,6 @@ func NewJobTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, acti
 		return nil, err
 	}
 	jobService := NewJobService(db, jobRepository)
-	jobHandler := NewJobHandler(jobService, logError, validator.Validate, action)
+	jobHandler := NewJobHandler(jobService, logError, validator.Validate, writeLog, action)
 	return jobHandler, nil
 }

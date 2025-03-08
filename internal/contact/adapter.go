@@ -11,18 +11,17 @@ import (
 )
 
 func NewContactAdapter(db *sql.DB, buildQuery func(*ContactFilter) (string, []interface{})) (*ContactAdapter, error) {
-	contactType := reflect.TypeOf(Contact{})
-	params, err := s.CreateParams(contactType, db)
+	parameters, err := s.CreateParameters(reflect.TypeOf(Contact{}), db)
 	if err != nil {
 		return nil, err
 	}
-	return &ContactAdapter{DB: db, Params: params, BuildQuery: buildQuery}, nil
+	return &ContactAdapter{DB: db, Parameters: parameters, BuildQuery: buildQuery}, nil
 }
 
 type ContactAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*ContactFilter) (string, []interface{})
-	*s.Params
+	*s.Parameters
 }
 
 func (r *ContactAdapter) All(ctx context.Context) ([]Contact, error) {

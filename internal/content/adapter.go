@@ -15,18 +15,17 @@ func NewContentAdapter(db *sql.DB, buildQuery func(*ContentFilter) (string, []in
 	driver.Valuer
 	sql.Scanner
 }) (*ContentAdapter, error) {
-	contentType := reflect.TypeOf(Content{})
-	params, err := s.CreateParams(contentType, db)
+	parameters, err := s.CreateParameters(reflect.TypeOf(Content{}), db)
 	if err != nil {
 		return nil, err
 	}
-	return &ContentAdapter{DB: db, Params: params, BuildQuery: buildQuery, Array: toArray}, nil
+	return &ContentAdapter{DB: db, Parameters: parameters, BuildQuery: buildQuery, Array: toArray}, nil
 }
 
 type ContentAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*ContentFilter) (string, []interface{})
-	*s.Params
+	*s.Parameters
 	Array func(interface{}) interface {
 		driver.Valuer
 		sql.Scanner

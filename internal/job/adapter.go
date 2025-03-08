@@ -15,18 +15,17 @@ func NewJobAdapter(db *sql.DB, buildQuery func(*JobFilter) (string, []interface{
 	driver.Valuer
 	sql.Scanner
 }) (*JobAdapter, error) {
-	jobType := reflect.TypeOf(Job{})
-	params, err := s.CreateParams(jobType, db)
+	parameters, err := s.CreateParameters(reflect.TypeOf(Job{}), db)
 	if err != nil {
 		return nil, err
 	}
-	return &JobAdapter{DB: db, Params: params, BuildQuery: buildQuery, Array: toArray}, nil
+	return &JobAdapter{DB: db, Parameters: parameters, BuildQuery: buildQuery, Array: toArray}, nil
 }
 
 type JobAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*JobFilter) (string, []interface{})
-	*s.Params
+	*s.Parameters
 	Array func(interface{}) interface {
 		driver.Valuer
 		sql.Scanner

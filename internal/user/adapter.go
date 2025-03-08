@@ -52,8 +52,8 @@ func NewUserAdapter(db *sql.DB) (*UserAdapter, error) {
 
 func (s *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 	var users []User
-	sql := fmt.Sprintf("select * from users where user_id = %s", s.BuildParam(1))
-	er1 := q.Query(ctx, s.db, s.Map, &users, sql, id)
+	query := fmt.Sprintf("select * from users where user_id = %s", s.BuildParam(1))
+	er1 := q.Query(ctx, s.db, s.Map, &users, query, id)
 	if er1 != nil {
 		return nil, er1
 	}
@@ -63,8 +63,8 @@ func (s *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 
 	var userRoles []userRole
 	roles := make([]string, 0)
-	query := fmt.Sprintf(`select role_id from user_roles where user_id = %s`, s.BuildParam(1))
-	err := q.Query(ctx, s.db, s.RoleMap, &userRoles, query, id)
+	queryRoles := fmt.Sprintf(`select role_id from user_roles where user_id = %s`, s.BuildParam(1))
+	err := q.Query(ctx, s.db, s.RoleMap, &userRoles, queryRoles, id)
 	if err != nil {
 		return nil, err
 	}

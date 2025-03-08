@@ -15,18 +15,17 @@ func NewArticleAdapter(db *sql.DB, buildQuery func(*ArticleFilter) (string, []in
 	driver.Valuer
 	sql.Scanner
 }) (*ArticleAdapter, error) {
-	articleType := reflect.TypeOf(Article{})
-	params, err := s.CreateParams(articleType, db)
+	parameters, err := s.CreateParameters(reflect.TypeOf(Article{}), db)
 	if err != nil {
 		return nil, err
 	}
-	return &ArticleAdapter{DB: db, Params: params, BuildQuery: buildQuery, Array: toArray}, nil
+	return &ArticleAdapter{DB: db, Parameters: parameters, BuildQuery: buildQuery, Array: toArray}, nil
 }
 
 type ArticleAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*ArticleFilter) (string, []interface{})
-	*s.Params
+	*s.Parameters
 	Array func(interface{}) interface {
 		driver.Valuer
 		sql.Scanner

@@ -300,11 +300,11 @@ insert into categories (id,name,status,path,resource_key,icon,sequence,type,pare
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('services','Services','A','/services','services','settings',2,'content','');
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('news','News','A','/news','news','credit_card',3,'','');
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('careers','Careers','A','/careers','careers','work',4,'','');
-insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('contact','contact','A','/contact','contact','mail',5,'','');
+insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('contact','Contact','A','/contact','contact','mail',5,'','');
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('about','About','A','/about','about','assignment',6,'','');
 
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('milestones','Milestones','A','/milestones','milestones','public',1,'content','about');
-insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('companies','companies','A','/companies','companies','account_balance',2,'content','about');
+insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('companies','Companies','A','/companies','companies','account_balance',2,'content','about');
 insert into categories (id,name,status,path,resource_key,icon,sequence,type,parent) values ('leadership','Leadership','A','/leadership','leadership','person',3,'content','about');
 
 update categories set version = 1;

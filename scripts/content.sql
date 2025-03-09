@@ -435,7 +435,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
           src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/christophe-schwanegel.webp"
         />
         <h3 class="center">Christophe Schwanengel</h3>
-        <p class="center">Giám đốc điều hành, FPT Giám đốc điều hành</p>
+        <p class="center">Giám đốc điều hành, FPT Pháp</p>
       </li>
     </ul>
   </div>
@@ -716,7 +716,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
             src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/christophe-schwanegel.webp"
           />
           <h3 class="center">Christophe Schwanengel</h3>
-          <p class="center">Giám đốc điều hành, FPT Giám đốc điều hành</p>
+          <p class="center">Giám đốc điều hành, FPT Pháp</p>
         </li>
       </ul>
     </section>

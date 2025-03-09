@@ -13,11 +13,12 @@ import (
 const (
 	role      = "role"
 	user      = "user"
+	audit_log = "audit_log"
+	category  = "category"
 	content   = "content"
 	article   = "article"
 	job       = "job"
 	contact   = "contact"
-	audit_log = "audit_log"
 )
 
 func Route(r *mux.Router, ctx context.Context, conf Config) error {
@@ -56,6 +57,14 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Update, user, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Patch, user, c.ActionWrite, c.PATCH)
 	HandleWithSecurity(sec, users, "/{userId}", app.User.Delete, user, c.ActionWrite, c.DELETE)
+
+	categories := r.PathPrefix("/categories").Subrouter()
+	HandleWithSecurity(sec, categories, "/search", app.Category.Search, category, c.ActionRead, c.GET, c.POST)
+	HandleWithSecurity(sec, categories, "/{id}", app.Category.Load, category, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, categories, "", app.Category.Create, category, c.ActionWrite, c.POST)
+	HandleWithSecurity(sec, categories, "/{id}", app.Category.Update, category, c.ActionWrite, c.PUT)
+	HandleWithSecurity(sec, categories, "/{id}", app.Category.Patch, category, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, categories, "/{id}", app.Category.Delete, category, c.ActionWrite, c.DELETE)
 
 	contents := r.PathPrefix("/contents").Subrouter()
 	HandleWithSecurity(sec, contents, "/search", app.Content.Search, content, c.ActionRead, c.GET, c.POST)

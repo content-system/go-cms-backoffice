@@ -15,38 +15,6 @@ create table contents (
 );
 
 insert into contents (id,lang,title,body,published_at,tags,status,version) values
-	 ('milestones','en','Milestones','<div>
-  <header><h1>Milestones</h1></header>
-  <div>
-    <dl class="data-list row">
-      <dt class="col s2 l1 right-align">1999</dt>
-      <dd class="col s10 l11">FPT Software was founded in 1999 by 13 members of FPT Group, led by Nguyen Thanh Nam</dd>
-      <dt class="col s2 l1 right-align">2005</dt>
-      <dd class="col s10 l11">Opened the overseas branch in Japan.</dd>
-      <dt class="col s2 l1 right-align">2007</dt>
-      <dd class="col s10 l11">Opened our office in Singapore and exceeded US $10 million in profits</dd>
-      <dt class="col s2 l1 right-align">2008</dt>
-      <dd class="col s10 l11">Expanded global operations to the United States, France, Australia and Malaysia</dd>
-      <dt class="col s2 l1 right-align">2012</dt>
-      <dd class="col s10 l11">Opened the first office in Germany.</dd>
-      <dt class="col s2 l1 right-align">2013</dt>
-      <dd class="col s10 l11">FPT Software crossed the US $100 million in revenue by end of 2013</dd>
-      <dt class="col s2 l1 right-align">2014</dt>
-      <dd class="col s10 l11">Acquired RWE IT Slovakia - became the first Vietnamese IT company to conduct an overseas M&amp;A deal</dd>
-      <dt class="col s2 l1 right-align">2016</dt>
-      <dd class="col s10 l11">Exceeded US $200 million in revenue and 10,000 employees. FPT Korea was established</dd>
-      <dt class="col s2 l1 right-align">2018</dt>
-      <dd class="col s10 l11">
-        FPT bought a majority stake in Intellinet, expanding footprint in the American market and elevating our digital transformation
-        leadership
-      </dd>
-      <dt class="col s2 l1 right-align">2022</dt>
-      <dd class="col s10 l11">Achieved over US $800mil in revenue (third consecutive year with a growth rate of over 25%)</dd>
-      <dt class="col s2 l1 right-align">2023</dt>
-      <dd class="col s10 l11">Achieved over US $1 billion in revenue</dd>
-    </dl>
-  </div>
-</div>',null,'{}',null,1),
 	 ('services','en','Services','<div>
   <header><h1>Services</h1></header>
   <div>
@@ -92,7 +60,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
     </ul>
   </div>
 </div>
-',null,'{}',null,1),
+',null,'{}','A',1),
 	 ('leadership','en','Leadership','<div>
   <header><h1>Leadership</h1></header>
   <div>
@@ -160,7 +128,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
     </ul>
   </div>
 </div>
-',null,'{}',null,1),
+',null,'{}','A',1),
 	 ('companies','en','Companies','<div>
   <header>
     <h1>Companies</h1>
@@ -212,7 +180,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
       </li>
     </ul>
   </div>
-</div>',null,'{}',null,1),
+</div>',null,'{}','A',1),
 	 ('home','en','Home','<div class="view-container">
   <header>
     <h1>FPT Software</h1>
@@ -404,7 +372,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
     </section>
   </div>
 </div>
-',null,'{}',null,1),
+',null,'{}','A',1),
 	 ('leadership','vi','Leadership','<div>
   <header><h1>Khả năng lãnh đạo</h1></header>
   <div>
@@ -472,54 +440,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
     </ul>
   </div>
 </div>
-',null,'{}',null,1),
-	 ('services','vi','Services','<div>
-  <header><h1>Dịch vụ</h1></header>
-  <div>
-    <h4 class="h4">
-      FPT chuyên tạo ra các giải pháp phần mềm cho nhiều ngành công nghiệp khác nhau - trải dài ở nhiều cấp độ và yêu cầu khác nhau.
-    </h4>
-    <ul class="row list">
-      <li class="col s6 l3 img-card">
-        <img
-          src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/automative-services/auto-services-lp_banner-mobile.webp"
-        />
-        <h3>Phát triển phần mềm</h3>
-        <p>
-          Phát triển phần mềm trên nhiều nền tảng khác nhau, từ mạng (GO, Java, .NET, Java Script, PHP & Python) đến ứng dụng di động
-          (Android/iOS gốc và đa nền tảng)​
-        </p>
-      </li>
-      <li class="col s6 l3 img-card">
-        <img
-          src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/vehicle-engineering-cad-cae-services/vehicle-engineering-lp_banner-1_mobile.png"
-        />
-        <h3>Kiểm thử phần mềm</h3>
-        <p>
-          Với đội ngũ được xây dựng với chuyên môn hóa cao, chúng tôi cung cấp hơn 15 năm kiến ​​thức và chuyên môn về thử nghiệm. Chúng tôi
-          có thể hỗ trợ các dự án hiện tại của bạn hoặc làm việc như đội chuyên kiểm thử phần mềm rieeng biệt.
-        </p>
-      </li>
-      <li class="col s6 l3 img-card">
-        <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/logistics/750x1000-min.png" />
-        <h3>Dịch vụ dữ liệu</h3>
-        <p>
-          Tính toàn vẹn của dữ liệu rất quan trọng. Chúng tôi cung cấp hỗ trợ toàn diện cho tính toàn vẹn và phân tích dữ liệu, đảm bảo dữ
-          liệu sạch, chính xác và sẵn sàng để truyền tải liền mạch một cách toàn diện.
-        </p>
-      </li>
-      <li class="col s6 l3 img-card">
-        <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/automotive/automotive-lp_banner-3_mobile.png" />
-        <h3>Trí tuệ nhân tạo và máy học</h3>
-        <p>
-          Chúng tôi giúp khách hàng tận dụng các công nghệ mới nổi như trí tuệ nhân tạo (AI) và máy học (ML) để nâng cao chất lượng sản phẩm
-          phần mềm của họ, từ quy trình chuẩn bị dữ liệu đến phát triển các thuật toán máy học tốt nhất. Chúng tôi đảm bảo chất lượng kỹ
-          thuật cao nhất và giao tiếp minh bạch trong suốt hành trình máy học của bạn.
-        </p>
-      </li>
-    </ul>
-  </div>
-</div>',null,'{}',null,1),
+',null,'{}','A',1),
 	 ('milestones','vi','Milestones','<div>
   <header><h1>Các cột mốc quan trọng</h1></header>
   <div>
@@ -553,7 +474,7 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
     </dl>
   </div>
 </div>
-',null,'{}',null,1),
+',null,NULL,'A',1),
 	 ('companies','vi','Companies','<div>
   <header>
     <h1>Các công ty thành viên</h1>
@@ -605,4 +526,279 @@ insert into contents (id,lang,title,body,published_at,tags,status,version) value
       </li>
     </ul>
   </div>
-</div>',null,'{}',null,1);
+</div>',null,'{}','A',1),
+	 ('home','vi','Home','<div class="view-container">
+  <header>
+    <h1>Công ty phần mềm FPT</h1>
+  </header>
+  <div class="view-body">
+    <p class="p">
+      Công ty trách nhiệm hữu hạn phần mềm FPT, còn được gọi đơn giản là Fsoft, là nhà cung cấp dịch vụ công nghệ thông tin toàn cầu có trụ
+      sở chính tại Hà Nội, Việt Nam, là công ty con lớn của Tập đoàn FPT. Đây là một trong những công ty dịch vụ phần mềm lớn nhất tại Việt
+      Nam, với doanh thu 1,87 tỷ đô la Mỹ (năm tài chính 2022) và hơn 48.000 nhân viên.
+    </p>
+    <section>
+      <h2>Tại sao chọn chúng tôi?</h2>
+      <ul class="row list">
+        <li class="col s12 l6 xl3 card">
+          <section>
+            <h3>Trung tâm tài năng công nghệ</h3>
+            <p>
+              Đội ngũ nhiều tài năng dày dạn kinh nghiệm trên toàn cầu của chúng tôi có chuyên môn đa ngành, trải dài trên nhiều lĩnh vực
+              như chăm sóc sức khỏe, tài chính, bán lẻ, AI/AR, v.v. Đội ngũ nhân viên tận tụy và giàu kinh nghiệm của chúng tôi đóng vai trò
+              là chất xúc tác cho thành công của bạn.
+            </p>
+          </section>
+        </li>
+        <li class="col s12 l6 xl3 card">
+          <section>
+            <h3>Cung cấp dịch vụ chất lượng cao</h3>
+            <p>
+              Các phương pháp linh hoạt như Scrum và phát triển MVP đẩy nhanh quá trình phân phối, đảm bảo thời gian hoàn thành nhanh chóng.
+              Việc thiết lập nhóm chỉ mất ít thời gian (3-5 ngày).
+            </p>
+          </section>
+        </li>
+        <li class="col s12 l6 xl3 card">
+          <section>
+            <h3>Chi phí hiệu quả</h3>
+            <p>
+              Chúng tôi ưu tiên đưa ra các giải pháp đáp ứng với kỳ vọng của bạn, đảm bảo giao hàng nhanh chóng và tối đa hóa sự hài lòng
+              của khách hàng.
+            </p>
+          </section>
+        </li>
+        <li class="col s12 l6 xl3 card">
+          <section>
+            <h3>Quan hệ đối tác trọn đời</h3>
+            <p>
+              Chúng tôi tin tưởng vàovào sức mạnh của sự hợp tác lâu dài, bằng chứng là nhiều khách hàng đã đồng hành cùng chúng tôi ngay từ
+              những ngày đầu. Thiết lập quan hệ đối tác lâu dài là ưu tiên hàng đầu của chúng tôi với mọi khách hàng, vì họ là nền tảng cho
+              sự thành công chung.
+            </p>
+          </section>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>Tầm nhìn, Nhiệm vụ &amp; Giá trị cốt lõi</h2>
+      <ul class="row list">
+        <li class="col s12 m4 card">
+          <section>
+            <h3>Tầm nhìn</h3>
+            <p>
+              Trở thành công ty đi đầu được công nhận trên toàn cầu trong lĩnh vực phát triển phần mềm, nổi tiếng với các giải pháp tiên
+              tiến, dịch vụ khách hàng xuất sắc và cam kết thúc đẩy cộng đồng công nghệ phát triển mạnh mẽ.
+            </p>
+          </section>
+        </li>
+        <li class="col s12 m4 card">
+          <section>
+            <h3>Nhiệm vụ</h3>
+            <p>
+              Cung cấp các giải pháp công nghệ tiên tiến giúp doanh nghiệp phát triển mạnh mẽ trong thế giới số, thông qua dịch vụ vượt trội
+              và cam kết hướng đến sự xuất sắc.
+            </p>
+          </section>
+        </li>
+        <li class="col s12 m4 card">
+          <section>
+            <h3>Giá trị cốt lõi</h3>
+            <p>
+              Chúng tôi ưu tiên đam mê sáng tạo, duy trì tính toàn vẹn và chất lượng trong mọi dự án. Phương pháp tiếp cận lấy con người làm
+              trung tâm của chúng tôi đảm bảo rằng chúng tôi tập trung vào nhu cầu và thành công của khách hàng và các thành viên trong
+              nhóm, thúc đẩy môi trường hợp tác và hỗ trợ.
+            </p>
+          </section>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>Dịch vụ</h2>
+      <ul class="row list">
+        <li class="col s6 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/automative-services/auto-services-lp_banner-mobile.webp"
+          />
+          <h3>Phát triển phần mềm</h3>
+          <p>
+            Phát triển phần mềm trên nhiều nền tảng khác nhau, từ mạng (GO, Java, .NET, Java Script, PHP & Python) đến ứng dụng di động
+            (Android/iOS gốc và đa nền tảng)​
+          </p>
+        </li>
+        <li class="col s6 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/vehicle-engineering-cad-cae-services/vehicle-engineering-lp_banner-1_mobile.png"
+          />
+          <h3>Kiểm thử phần mềm</h3>
+          <p>
+            Với đội ngũ được xây dựng với chuyên môn hóa cao, chúng tôi cung cấp hơn 15 năm kiến ​​thức và chuyên môn về thử nghiệm. Chúng
+            tôi có thể hỗ trợ các dự án hiện tại của bạn hoặc làm việc như đội chuyên kiểm thử phần mềm rieeng biệt.
+          </p>
+        </li>
+        <li class="col s6 l3 img-card">
+          <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/logistics/750x1000-min.png" />
+          <h3>Dịch vụ dữ liệu</h3>
+          <p>
+            Tính toàn vẹn của dữ liệu rất quan trọng. Chúng tôi cung cấp hỗ trợ toàn diện cho tính toàn vẹn và phân tích dữ liệu, đảm bảo dữ
+            liệu sạch, chính xác và sẵn sàng để truyền tải liền mạch một cách toàn diện.
+          </p>
+        </li>
+        <li class="col s6 l3 img-card">
+          <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/automotive/automotive-lp_banner-3_mobile.png" />
+          <h3>Trí tuệ nhân tạo và máy học</h3>
+          <p>
+            Chúng tôi giúp khách hàng tận dụng các công nghệ mới nổi như trí tuệ nhân tạo (AI) và máy học (ML) để nâng cao chất lượng sản
+            phẩm phần mềm của họ, từ quy trình chuẩn bị dữ liệu đến phát triển các thuật toán máy học tốt nhất. Chúng tôi đảm bảo chất lượng
+            kỹ thuật cao nhất và giao tiếp minh bạch trong suốt hành trình máy học của bạn.
+          </p>
+        </li>
+      </ul>
+    </section>
+    <h2>Khả năng lãnh đạo</h2>
+    <section class="section">
+      <h2>Ban lãnh đạo</h2>
+      <ul class="row list">
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/chu-thi-thanh-ha.webp"
+          />
+          <h3 class="center">Chu Thi Thanh Ha</h3>
+          <p class="center">Chủ tịch, FPT Software</p>
+        </li>
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/pham-minh-tuan.webp"
+          />
+          <h3 class="center">Pham Minh Tuan</h3>
+          <p class="center">Tổng giám đốc điều hành, FPT Software</p>
+        </li>
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/nguyen-khai-hoan.webp"
+          />
+          <h3 class="center">Nguyen Khai Hoan</h3>
+          <p class="center">Giám đốc vận hành</p>
+        </li>
+        <li class="col s6 m4 l3 push-m4 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/dao-duy-cuong.webp"
+          />
+          <h3 class="center">Dao Duy Cuong</h3>
+          <p class="center">Giám đốc công nghệ</p>
+        </li>
+      </ul>
+      <h2>Ban lãnh đạo các khu vực</h2>
+      <ul class="row list">
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/do-van-khac.webp"
+          />
+          <h3 class="center">Do Van Khac</h3>
+          <p class="center">Giám đốc điều hành, FPT Nhật Bản</p>
+        </li>
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/dang-tran-phuong.webp"
+          />
+          <h3 class="center">Dang Tran Phuong</h3>
+          <p class="center">Giám đốc điều hành, FPT Mỹ</p>
+        </li>
+        <li class="col s6 m4 l3 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/mark-scrivens.webp"
+          />
+          <h3 class="center">Mark Scrivens</h3>
+          <p class="center">Giám đốc điều hành, FPT Vương quốc Anh</p>
+        </li>
+        <li class="col s6 m4 l3 push-m4 img-card">
+          <img
+            src="https://fptsoftware.com/-/media/project/fpt-software/fso/uplift/board-of-management/board-of-management/christophe-schwanegel.webp"
+          />
+          <h3 class="center">Christophe Schwanengel</h3>
+          <p class="center">Giám đốc điều hành, FPT Giám đốc điều hành</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>
+',null,'{}','A',1),
+	 ('milestones','en','Milestones','<div>
+  <header><h1>Milestones</h1></header>
+  <div>
+    <dl class="data-list row">
+      <dt class="col s2 l1 right-align">1999</dt>
+      <dd class="col s10 l11">FPT Software was founded in 1999 by 13 members of FPT Group, led by Nguyen Thanh Nam</dd>
+      <dt class="col s2 l1 right-align">2005</dt>
+      <dd class="col s10 l11">Opened the overseas branch in Japan.</dd>
+      <dt class="col s2 l1 right-align">2007</dt>
+      <dd class="col s10 l11">Opened our office in Singapore and exceeded US $10 million in profits</dd>
+      <dt class="col s2 l1 right-align">2008</dt>
+      <dd class="col s10 l11">Expanded global operations to the United States, France, Australia and Malaysia</dd>
+      <dt class="col s2 l1 right-align">2012</dt>
+      <dd class="col s10 l11">Opened the first office in Germany.</dd>
+      <dt class="col s2 l1 right-align">2013</dt>
+      <dd class="col s10 l11">FPT Software crossed the US $100 million in revenue by end of 2013</dd>
+      <dt class="col s2 l1 right-align">2014</dt>
+      <dd class="col s10 l11">Acquired RWE IT Slovakia - became the first Vietnamese IT company to conduct an overseas M&amp;A deal</dd>
+      <dt class="col s2 l1 right-align">2016</dt>
+      <dd class="col s10 l11">Exceeded US $200 million in revenue and 10,000 employees. FPT Korea was established</dd>
+      <dt class="col s2 l1 right-align">2018</dt>
+      <dd class="col s10 l11">
+        FPT bought a majority stake in Intellinet, expanding footprint in the American market and elevating our digital transformation
+        leadership
+      </dd>
+      <dt class="col s2 l1 right-align">2022</dt>
+      <dd class="col s10 l11">Achieved over US $800mil in revenue (third consecutive year with a growth rate of over 25%)</dd>
+      <dt class="col s2 l1 right-align">2023</dt>
+      <dd class="col s10 l11">Achieved over US $1 billion in revenue</dd>
+    </dl>
+  </div>
+</div>',null,'{}','A',1),
+	 ('services','vi','Services','<div>
+  <header><h1>Dịch vụ</h1></header>
+  <div>
+    <h4 class="h4">
+      FPT chuyên tạo ra các giải pháp phần mềm cho nhiều ngành công nghiệp khác nhau - trải dài ở nhiều cấp độ và yêu cầu khác nhau.
+    </h4>
+    <ul class="row list">
+      <li class="col s6 l3 img-card">
+        <img
+          src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/automative-services/auto-services-lp_banner-mobile.webp"
+        />
+        <h3>Phát triển phần mềm</h3>
+        <p>
+          Phát triển phần mềm trên nhiều nền tảng khác nhau, từ mạng (GO, Java, .NET, Java Script, PHP & Python) đến ứng dụng di động
+          (Android/iOS gốc và đa nền tảng)​
+        </p>
+      </li>
+      <li class="col s6 l3 img-card">
+        <img
+          src="https://fptsoftware.com/-/media/project/fpt-software/fso/services/product-engineering-services/vehicle-engineering-cad-cae-services/vehicle-engineering-lp_banner-1_mobile.png"
+        />
+        <h3>Kiểm thử phần mềm</h3>
+        <p>
+          Với đội ngũ được xây dựng với chuyên môn hóa cao, chúng tôi cung cấp hơn 15 năm kiến ​​thức và chuyên môn về thử nghiệm. Chúng tôi
+          có thể hỗ trợ các dự án hiện tại của bạn hoặc làm việc như đội chuyên kiểm thử phần mềm rieeng biệt.
+        </p>
+      </li>
+      <li class="col s6 l3 img-card">
+        <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/logistics/750x1000-min.png" />
+        <h3>Dịch vụ dữ liệu</h3>
+        <p>
+          Tính toàn vẹn của dữ liệu rất quan trọng. Chúng tôi cung cấp hỗ trợ toàn diện cho tính toàn vẹn và phân tích dữ liệu, đảm bảo dữ
+          liệu sạch, chính xác và sẵn sàng để truyền tải liền mạch một cách toàn diện.
+        </p>
+      </li>
+      <li class="col s6 l3 img-card">
+        <img src="https://fptsoftware.com/-/media/project/fpt-software/fso/industries/automotive/automotive-lp_banner-3_mobile.png" />
+        <h3>Trí tuệ nhân tạo và máy học</h3>
+        <p>
+          Chúng tôi giúp khách hàng tận dụng các công nghệ mới nổi như trí tuệ nhân tạo (AI) và máy học (ML) để nâng cao chất lượng sản phẩm
+          phần mềm của họ, từ quy trình chuẩn bị dữ liệu đến phát triển các thuật toán máy học tốt nhất. Chúng tôi đảm bảo chất lượng kỹ
+          thuật cao nhất và giao tiếp minh bạch trong suốt hành trình máy học của bạn.
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>',null,'{}','A',1);

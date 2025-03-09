@@ -26,6 +26,7 @@ import (
 
 	a "go-service/internal/article"
 	"go-service/internal/audit-log"
+	ca "go-service/internal/category"
 	c "go-service/internal/contact"
 	co "go-service/internal/content"
 	j "go-service/internal/job"
@@ -49,6 +50,7 @@ type ApplicationContext struct {
 	User                 u.UserTransport
 	AuditLog             *audit.AuditLogHandler
 	Settings             *se.Handler
+	Category             ca.CategoryTransport
 	Content              co.ContentTransport
 	Article              a.ArticleTransport
 	Job                  j.JobTransport
@@ -140,6 +142,11 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
+	categoryHandler, err := ca.NewCategoryTransport(db, logError, writeLog, cfg.Action)
+	if err != nil {
+		return nil, err
+	}
+
 	contentHandler, err := co.NewContentTransport(db, logError, writeLog, cfg.Action)
 	if err != nil {
 		return nil, err
@@ -188,6 +195,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		User:                 userHandler,
 		AuditLog:             auditLogHandler,
 		Settings:             settingsHandler,
+		Category:             categoryHandler,
 		Content:              contentHandler,
 		Article:              articleHandler,
 		Job:                  jobHandler,

@@ -10,4 +10,5 @@ type Content struct {
 	PublishedAt *time.Time `json:"publishedAt,omitempty" gorm:"column:published_at" bson:"publishedAt,omitempty" dynamodbav:"publishedAt,omitempty" firestore:"publishedAt,omitempty"`
 	Tags        []string   `json:"tags,omitempty" gorm:"column:tags" bson:"tags,omitempty" dynamodbav:"tags,omitempty" firestore:"tags,omitempty"`
 	Status      *string    `json:"status,omitempty" gorm:"column:status" bson:"status" dynamodbav:"status,omitempty" firestore:"status,omitempty"`
+	Version     int64      `yaml:"version" mapstructure:"version" json:"version,omitempty" gorm:"column:version" bson:"version" dynamodbav:"version,omitempty" firestore:"version,omitempty"`
 }

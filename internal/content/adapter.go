@@ -26,10 +26,8 @@ type ContentAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*ContentFilter) (string, []interface{})
 	*s.Parameters
-	Array func(interface{}) interface {
-		driver.Valuer
-		sql.Scanner
-	}
+	Array        s.Array
+	VersionIndex int // index of field Version in the Content struct
 }
 
 func (r *ContentAdapter) All(ctx context.Context) ([]Content, error) {
@@ -53,7 +51,7 @@ func (r *ContentAdapter) Load(ctx context.Context, id string, lang string) (*Con
 }
 
 func (r *ContentAdapter) Create(ctx context.Context, content *Content) (int64, error) {
-	query, args := s.BuildToInsertWithArray("contents", content, r.BuildParam, true, r.Array, r.Schema)
+	query, args := s.BuildToInsertWithVersion("contents", content, r.VersionIndex, r.BuildParam, true, r.Array, r.Schema)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -63,24 +61,49 @@ func (r *ContentAdapter) Create(ctx context.Context, content *Content) (int64, e
 }
 
 func (r *ContentAdapter) Update(ctx context.Context, content *Content) (int64, error) {
-	query, args := s.BuildToUpdateWithArray("contents", content, r.BuildParam, true, r.Array, r.Schema)
+	query, args := s.BuildToUpdateWithVersion("contents", content, r.VersionIndex, r.BuildParam, true, r.Array, r.Schema)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
 	}
-	return res.RowsAffected()
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return -1, err
+	}
+	if rowsAffected <= 0 {
+		exist, err := s.Exist(ctx, tx, fmt.Sprintf("select id from contents where id = %s limit 1", r.BuildParam(1)), content.Id)
+		if err != nil {
+			return -1, err
+		}
+		if exist {
+			return -1, nil
+		}
+		return 0, nil
+	}
+	return rowsAffected, nil
 }
 
 func (r *ContentAdapter) Patch(ctx context.Context, content map[string]interface{}) (int64, error) {
 	colMap := s.JSONToColumns(content, r.JsonColumnMap)
-	query, args := s.BuildToPatchWithArray("contents", colMap, r.Keys, r.BuildParam, r.Array)
+	query, args := s.BuildToPatchWithVersion("contents", colMap, r.Keys, r.BuildParam, r.Array, "version", r.Schema.Fields)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
 	}
-	return res.RowsAffected()
+	rowsAffected, err := res.RowsAffected()
+	if rowsAffected <= 0 {
+		exist, err := s.Exist(ctx, tx, fmt.Sprintf("select id from contents where id = %s limit 1", r.BuildParam(1)), content["id"])
+		if err != nil {
+			return -1, err
+		}
+		if exist {
+			return -1, nil
+		}
+		return 0, nil
+	}
+	return rowsAffected, nil
 }
 
 func (r *ContentAdapter) Delete(ctx context.Context, id string, lang string) (int64, error) {

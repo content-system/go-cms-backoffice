@@ -15,13 +15,15 @@ func NewCategoryAdapter(db *sql.DB, buildQuery func(*CategoryFilter) (string, []
 	if err != nil {
 		return nil, err
 	}
-	return &CategoryAdapter{DB: db, Parameters: parameters, BuildQuery: buildQuery}, nil
+	versionIndex := parameters.Map["version"]
+	return &CategoryAdapter{DB: db, Parameters: parameters, VersionIndex: versionIndex, BuildQuery: buildQuery}, nil
 }
 
 type CategoryAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*CategoryFilter) (string, []interface{})
 	*s.Parameters
+	VersionIndex int // index of field Version in the Category struct
 }
 
 func (r *CategoryAdapter) All(ctx context.Context) ([]Category, error) {
@@ -45,7 +47,7 @@ func (r *CategoryAdapter) Load(ctx context.Context, id string) (*Category, error
 }
 
 func (r *CategoryAdapter) Create(ctx context.Context, category *Category) (int64, error) {
-	query, args := s.BuildToInsert("categories", category, r.BuildParam, r.Schema)
+	query, args := s.BuildToInsertWithVersion("categories", category, r.VersionIndex, r.BuildParam, true, nil, r.Schema)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -55,24 +57,52 @@ func (r *CategoryAdapter) Create(ctx context.Context, category *Category) (int64
 }
 
 func (r *CategoryAdapter) Update(ctx context.Context, category *Category) (int64, error) {
-	query, args := s.BuildToUpdate("categories", category, r.BuildParam, r.Schema)
+	query, args := s.BuildToUpdateWithVersion("categories", category, r.VersionIndex, r.BuildParam, true, nil, r.Schema)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
 	}
-	return res.RowsAffected()
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return -1, err
+	}
+	if rowsAffected <= 0 {
+		exist, err := s.Exist(ctx, tx, fmt.Sprintf("select id from categories where id = %s limit 1", r.BuildParam(1)), category.Id)
+		if err != nil {
+			return -1, err
+		}
+		if exist {
+			return -1, nil
+		}
+		return 0, nil
+	}
+	return rowsAffected, nil
 }
 
 func (r *CategoryAdapter) Patch(ctx context.Context, category map[string]interface{}) (int64, error) {
 	colMap := s.JSONToColumns(category, r.JsonColumnMap)
-	query, args := s.BuildToPatch("categories", colMap, r.Keys, r.BuildParam)
+	query, args := s.BuildToPatchWithVersion("categories", colMap, r.Keys, r.BuildParam, nil, "version", r.Schema.Fields)
 	tx := s.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
 	}
-	return res.RowsAffected()
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return -1, err
+	}
+	if rowsAffected <= 0 {
+		exist, err := s.Exist(ctx, tx, fmt.Sprintf("select id from categories where id = %s limit 1", r.BuildParam(1)), category["id"])
+		if err != nil {
+			return -1, err
+		}
+		if exist {
+			return -1, nil
+		}
+		return 0, nil
+	}
+	return rowsAffected, nil
 }
 
 func (r *CategoryAdapter) Delete(ctx context.Context, id string) (int64, error) {

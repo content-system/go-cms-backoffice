@@ -1,7 +1,6 @@
 package app
 
 import (
-	"github.com/core-go/authentication/ldap"
 	q "github.com/core-go/authentication/sql"
 	"github.com/core-go/core"
 	"github.com/core-go/core/audit"
@@ -19,7 +18,6 @@ type Config struct {
 	Allow        cors.AllowConfig       `mapstructure:"allow"`
 	SecuritySkip bool                   `mapstructure:"security_skip"`
 	Template     bool                   `mapstructure:"template"`
-	Ldap         ldap.LDAPConfig        `mapstructure:"ldap"`
 	Auth         q.SqlAuthConfig        `mapstructure:"auth"`
 	DB           DBConfig               `mapstructure:"db"`
 	Log          log.Config             `mapstructure:"log"`

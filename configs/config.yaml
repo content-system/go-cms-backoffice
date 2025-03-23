@@ -58,15 +58,15 @@ auth:
     id: userId
     username: username
     email: email
-    user_type: roleId
+    lang: lang
   user_status:
     activated: A
     deactivated: I
     disable: D
     suspended: S
   query: |
-    select u.user_id as id, u.username, u.display_name as displayname, email, u.status, u.max_password_age as maxpasswordage, 
-      p.password, p.success_time as successtime, p.fail_time as failtime, p.fail_count as failcount, p.locked_until_time as lockeduntiltime, p.changed_time as passwordchangedtime
+    select u.user_id as id, u.username, u.display_name, email as contact, language, u.status, u.max_password_age, 
+      p.password, p.success_time, p.fail_time, p.fail_count, p.locked_until_time, p.changed_time as passwordchangedtime
     from users u
     inner join passwords p
       on u.user_id = p.user_id

@@ -6,10 +6,10 @@ import (
 
 	"github.com/core-go/authentication"
 	ah "github.com/core-go/authentication/handler"
-	"github.com/core-go/authentication/mock"
 	as "github.com/core-go/authentication/sql"
 	"github.com/core-go/core/authorization"
 	"github.com/core-go/core/code"
+	"github.com/core-go/core/crypto"
 	"github.com/core-go/core/health"
 	hs "github.com/core-go/core/health/sql"
 	se "github.com/core-go/core/settings"
@@ -91,19 +91,16 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	authorizer := sec.NewAuthorizer(sqlPrivilegeLoader.Privilege, true, userId)
 
 	authStatus := auth.InitStatus(cfg.Auth.Status)
-	ldapAuthenticator, er2 := mock.NewDAPAuthenticatorByConfig(cfg.Ldap, authStatus)
-	if er2 != nil {
-		return nil, er2
-	}
 	userPort, er3 := as.NewUserAdapter(db, cfg.Auth.Query, cfg.Auth.DB, cfg.Auth.UserStatus)
 	if er3 != nil {
 		return nil, er3
 	}
+	bcryptComparator := &crypto.BCryptStringComparator{}
 	privilegePort, er4 := as.NewSqlPrivilegesAdapter(db, cfg.Sql.PrivilegesByUser, 1, true)
 	if er4 != nil {
 		return nil, er4
 	}
-	authenticator := auth.NewBasicAuthenticator(authStatus, ldapAuthenticator.Authenticate, userPort, tokenPort.GenerateToken, cfg.Auth.Token, cfg.Auth.Payload, privilegePort.Load)
+	authenticator := auth.NewAuthenticator(authStatus, userPort, bcryptComparator, tokenPort.GenerateToken, cfg.Auth.Token, cfg.Auth.Payload, privilegePort.Load)
 	authenticationHandler := ah.NewAuthenticationHandler(authenticator.Authenticate, authStatus.Error, authStatus.Timeout, logError, writeLog)
 
 	privilegeReader, er5 := as.NewPrivilegesReader(db, cfg.Sql.Privileges)

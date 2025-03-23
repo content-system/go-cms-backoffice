@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/core-go/core"
+	b "github.com/core-go/core/builder"
 	v "github.com/core-go/core/validator"
 	"github.com/core-go/sql/query/builder"
 )
@@ -18,7 +19,7 @@ type CategoryTransport interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-func NewCategoryTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, action *core.ActionConfig) (CategoryTransport, error) {
+func NewCategoryTransport(db *sql.DB, logError core.Log, tracking b.TrackingConfig, writeLog core.WriteLog, action *core.ActionConfig) (CategoryTransport, error) {
 	validator, err := v.NewValidator[*Category]()
 	if err != nil {
 		return nil, err
@@ -29,6 +30,6 @@ func NewCategoryTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog,
 		return nil, err
 	}
 	categoryService := NewCategoryService(db, categoryRepository)
-	categoryHandler := NewCategoryHandler(categoryService, logError, validator.Validate, writeLog, action)
+	categoryHandler := NewCategoryHandler(categoryService, logError, validator.Validate, tracking, writeLog, action)
 	return categoryHandler, nil
 }

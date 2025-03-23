@@ -1,7 +1,7 @@
 github.com/core-go/authentication v0.3.10 h1:NC/hWBQch8XnWRMWfhL3jP/lZUiX93Ieqqai//X0f2E=
 github.com/core-go/authentication v0.3.10/go.mod h1:fIn6qbXCsfci9wkjc4Xvikrha0cQ4WE1svcadaJH4Qg=
-github.com/core-go/core v1.3.2 h1:jonRo9DZpcdp8B15MPCgHlrHvUDNJm27Xl0lVpDlF/E=
-github.com/core-go/core v1.3.2/go.mod h1:6clsy/zJTzOZTX14L9bMCxX20uDlJKz+eiVglBYJXLM=
+github.com/core-go/core v1.3.3 h1:sCMI5WItjf+qLCVUsxFx4n9/BSWPSp4OPJt8sdCX0so=
+github.com/core-go/core v1.3.3/go.mod h1:6clsy/zJTzOZTX14L9bMCxX20uDlJKz+eiVglBYJXLM=
 github.com/core-go/log v1.0.9 h1:QGhJB8WOGBvcIt1YrSPqbupusCnYHhd4IMNsthyBY0Y=
 github.com/core-go/log v1.0.9/go.mod h1:nLtakp+tnvjYestj7RVMXHnZ3GMfMpeZvl9Gzo7xz6o=
 github.com/core-go/search v1.2.0 h1:m4OfD0yP12Swn3IbQCtxpdOrL8K3K6XJJ6z9dT2sVlM=

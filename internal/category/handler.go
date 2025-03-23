@@ -6,19 +6,22 @@ import (
 	"reflect"
 
 	"github.com/core-go/core"
+	b "github.com/core-go/core/builder"
 	"github.com/core-go/search"
 )
 
-func NewCategoryHandler(service CategoryService, logError core.Log, validate core.Validate[*Category], writeLog core.WriteLog, action *core.ActionConfig) *CategoryHandler {
+func NewCategoryHandler(service CategoryService, logError core.Log, validate core.Validate[*Category], tracking b.TrackingConfig, writeLog core.WriteLog, action *core.ActionConfig) *CategoryHandler {
 	categoryType := reflect.TypeOf(Category{})
 	parameters := search.CreateParameters(reflect.TypeOf(CategoryFilter{}), categoryType)
 	attributes := core.CreateAttributes(categoryType, logError, writeLog, action)
-	return &CategoryHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
+	builder := b.NewBuilderByConfig[Category](nil, tracking)
+	return &CategoryHandler{service: service, Validate: validate, builder: builder, Attributes: attributes, Parameters: parameters}
 }
 
 type CategoryHandler struct {
 	service  CategoryService
 	Validate core.Validate[*Category]
+	builder  core.Builder[Category]
 	*core.Attributes
 	*search.Parameters
 }
@@ -36,7 +39,7 @@ func (h *CategoryHandler) Load(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
-	category, er1 := core.Decode[Category](w, r)
+	category, er1 := core.Decode[Category](w, r, h.builder.Create)
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &category)
 		if !core.HasError(w, r, errors, er2, h.Error, &category, h.Log, h.Resource, h.Action.Create) {
@@ -59,7 +62,7 @@ func (h *CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
-	category, er1 := core.DecodeAndCheckId[Category](w, r, h.Keys, h.Indexes)
+	category, er1 := core.DecodeAndCheckId[Category](w, r, h.Keys, h.Indexes, h.builder.Update)
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &category)
 		if !core.HasError(w, r, errors, er2, h.Error, &category, h.Log, h.Resource, h.Action.Update) {
@@ -85,7 +88,7 @@ func (h *CategoryHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *CategoryHandler) Patch(w http.ResponseWriter, r *http.Request) {
-	r, category, jsonCategory, er1 := core.BuildMapAndCheckId[Category](w, r, h.Keys, h.Indexes)
+	r, category, jsonCategory, er1 := core.BuildMapAndCheckId[Category](w, r, h.Keys, h.Indexes, h.builder.Update)
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &category)
 		if !core.HasError(w, r, errors, er2, h.Error, jsonCategory, h.Log, h.Resource, h.Action.Patch) {

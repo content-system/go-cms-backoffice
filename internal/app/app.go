@@ -139,7 +139,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	categoryHandler, err := ca.NewCategoryTransport(db, logError, writeLog, cfg.Action)
+	categoryHandler, err := ca.NewCategoryTransport(db, logError, cfg.Tracking, writeLog, cfg.Action)
 	if err != nil {
 		return nil, err
 	}

@@ -64,6 +64,17 @@ auth:
     deactivated: I
     disable: D
     suspended: S
+  db:
+    id: user_id
+    user: users
+    password: passwords
+    username: username
+    success_time: success_time
+    fail_time: fail_time
+    fail_count: fail_count
+    locked_until_time: locked_until_time
+    status: status
+    max_password_age: max_password_age
   query: |
     select u.user_id as id, u.username, u.display_name, email as contact, language, u.status, u.max_password_age, 
       p.password, p.success_time, p.fail_time, p.fail_count, p.locked_until_time, p.changed_time as passwordchangedtime

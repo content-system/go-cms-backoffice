@@ -88,10 +88,8 @@ create table audit_logs (
   status varchar(255),
   remark varchar(255)
 );
-insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('dashboard','Dashboard','A','/dashboard','dashboard','assignment',1,7,'');
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('admin','Admin','A','/admin','admin','contacts',2,7,'');
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('setup','Setup','A','/setup','setup','settings',3,7,'');
-insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('report','Report','A','/report','report','pie_chart',4,7,'');
 
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('user','User Management','A','/users','user','person',1,7,'admin');
 insert into modules (module_id,module_name,status,path,resource_key,icon,sequence,actions,parent) values ('role','Role Management','A','/roles','role','credit_card',2,7,'admin');
@@ -167,15 +165,12 @@ insert into user_roles(user_id, role_id) values ('00011','it_support');
 insert into user_roles(user_id, role_id) values ('00012','call_center');
 insert into user_roles(user_id, role_id) values ('00012','it_support');
 
-insert into role_modules(role_id, module_id, permissions) values ('admin', 'dashboard', 7);
-insert into role_modules(role_id, module_id, permissions) values ('admin', 'setup', 7);
-insert into role_modules(role_id, module_id, permissions) values ('admin', 'report', 7);
 insert into role_modules(role_id, module_id, permissions) values ('admin', 'admin', 7);
+insert into role_modules(role_id, module_id, permissions) values ('admin', 'setup', 7);
 insert into role_modules(role_id, module_id, permissions) values ('admin', 'user', 7);
 insert into role_modules(role_id, module_id, permissions) values ('admin', 'role', 7);
 insert into role_modules(role_id, module_id, permissions) values ('admin', 'audit_log', 7);
 
-insert into role_modules(role_id, module_id, permissions) values ('it_support', 'dashboard', 7);
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'admin', 7);
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'user', 7);
 insert into role_modules(role_id, module_id, permissions) values ('it_support', 'role', 7);

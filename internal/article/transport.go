@@ -2,8 +2,9 @@ package article
 
 import (
 	"database/sql"
-	"github.com/lib/pq"
 	"net/http"
+
+	"github.com/lib/pq"
 
 	"github.com/core-go/core"
 	v "github.com/core-go/core/validator"
@@ -12,6 +13,7 @@ import (
 
 type ArticleTransport interface {
 	Search(w http.ResponseWriter, r *http.Request)
+	LoadDraft(w http.ResponseWriter, r *http.Request)
 	Load(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
@@ -24,12 +26,17 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
+	draftArticleRepository, err := NewDraftArticleAdapter(db, BuildDraftQuery, pq.Array)
+	if err != nil {
+		return nil, err
+	}
+
 	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "articles")
 	articleRepository, err := NewArticleAdapter(db, queryArticle, pq.Array)
 	if err != nil {
 		return nil, err
 	}
-	articleService := NewArticleService(db, articleRepository)
+	articleService := NewArticleService(db, draftArticleRepository, articleRepository)
 	articleHandler := NewArticleHandler(articleService, logError, validator.Validate, writeLog, action)
 	return articleHandler, nil
 }

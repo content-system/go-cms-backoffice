@@ -1,16 +1,19 @@
 module go-service
 
-go 1.18
+go 1.23.0
+
+toolchain go1.23.8
 
 require (
 	github.com/core-go/authentication v0.3.10
-	github.com/core-go/core v1.3.3
+	github.com/core-go/core v0.6.11
 	github.com/core-go/log v1.0.9
 	github.com/core-go/search v1.2.0
 	github.com/core-go/security v0.1.4
 	github.com/core-go/sql v0.6.6
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
+	golang.org/x/text v0.23.0
 )
 
 require (
@@ -41,7 +44,6 @@ require (
 	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

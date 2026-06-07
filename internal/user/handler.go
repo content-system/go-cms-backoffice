@@ -22,7 +22,7 @@ func NewUserHandler(
 	userType := reflect.TypeOf(User{})
 	builder := builder.NewBuilderByConfig[User](nil, tracking)
 	attributes := core.CreateAttributes(userType, logError, writeLog, action)
-	searchHandler := search.NewSearchHandler[User, *UserFilter](find, logError, nil)
+	searchHandler := search.NewSearchHandler(find, logError, nil)
 	return &UserHandler{SearchHandler: searchHandler, service: userService, validate: validate, builder: builder, Attributes: attributes}
 }
 
@@ -51,7 +51,7 @@ func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	user, er1 := core.Decode[User](w, r, h.builder.Create)
+	user, er1 := core.Decode(w, r, h.builder.Create)
 	if er1 == nil {
 		errors, er2 := h.validate(r.Context(), &user)
 		if !core.HasError(w, r, errors, er2, h.Error, &user, h.Log, h.Resource, h.Action.Create) {
@@ -74,7 +74,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	user, err := core.DecodeAndCheckId[User](w, r, h.Keys, h.Indexes, h.builder.Update)
+	user, err := core.DecodeAndCheckId(w, r, h.Keys, h.Indexes, h.builder.Update)
 	if err == nil {
 		errors, err := h.validate(r.Context(), &user)
 		if !core.HasError(w, r, errors, err, h.Error, &user, h.Log, h.Resource, h.Action.Update) {
@@ -100,7 +100,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
-	r, user, jsonUser, err := core.BuildMapAndCheckId[User](w, r, h.Keys, h.Indexes, h.builder.Update)
+	r, user, jsonUser, err := core.BuildMapAndCheckId(w, r, h.Keys, h.Indexes, h.builder.Update)
 	if err == nil {
 		errors, err := h.validate(r.Context(), &user)
 		if !core.HasError(w, r, errors, err, h.Error, jsonUser, h.Log, h.Resource, h.Action.Patch) {

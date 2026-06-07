@@ -23,6 +23,18 @@ type ArticleHandler struct {
 	*search.Parameters
 }
 
+func (h *ArticleHandler) LoadDraft(w http.ResponseWriter, r *http.Request) {
+	id, err := core.GetRequiredString(w, r, 1)
+	if err == nil {
+		article, err := h.service.LoadDraft(r.Context(), id)
+		if err != nil {
+			h.Error(r.Context(), fmt.Sprintf("Error to get article '%s': %s", id, err.Error()))
+			http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+			return
+		}
+		core.JSON(w, core.IsFound(article), article)
+	}
+}
 func (h *ArticleHandler) Load(w http.ResponseWriter, r *http.Request) {
 	id, err := core.GetRequiredString(w, r)
 	if err == nil {

@@ -76,7 +76,9 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 
 	articles := r.PathPrefix("/articles").Subrouter()
 	HandleWithSecurity(sec, articles, "/search", app.Article.Search, article, c.ActionRead, c.GET, c.POST)
+	HandleWithSecurity(sec, articles, "/", app.Article.Search, article, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Load, article, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, articles, "/{id}/draft", app.Article.LoadDraft, article, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, articles, "", app.Article.Create, article, c.ActionWrite, c.POST)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Update, article, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Patch, article, c.ActionWrite, c.PATCH)

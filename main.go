@@ -3,15 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/core-go/core/config"
 	"github.com/core-go/core/cors"
 	sv "github.com/core-go/core/server"
 	mid "github.com/core-go/log/middleware"
 	"github.com/core-go/log/strings"
-	"github.com/core-go/log/zap"
+	log "github.com/core-go/log/zap"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
-	"net/http"
 
 	"go-service/internal/app"
 )
@@ -28,10 +29,12 @@ func main() {
 	r.Use(func(handler http.Handler) http.Handler {
 		return mid.BuildContextWithMask(handler, MaskLog)
 	})
-	logger := mid.NewLogger()
-	if log.IsInfoEnable() {
-		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
-	}
+	/*
+		logger := mid.NewLogger()
+		if log.IsInfoEnable() {
+			r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
+		}
+	*/
 	r.Use(mid.Recover(log.ErrorMsg))
 
 	err = app.Route(r, context.Background(), cfg)

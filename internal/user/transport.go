@@ -2,9 +2,10 @@ package user
 
 import (
 	"database/sql"
-	"github.com/core-go/core/unique"
 	"net/http"
 	"reflect"
+
+	"github.com/core-go/core/unique"
 
 	"github.com/core-go/core"
 	"github.com/core-go/core/builder"
@@ -37,12 +38,12 @@ func NewUserTransport(db *sql.DB, logError core.Log, templates map[string]*templ
 	if err != nil {
 		return nil, err
 	}
-	userSearchBuilder, err := query.NewSearchBuilder[User, *UserFilter](db, queryUser)
+	userSearchBuilder, err := query.NewSearchBuilder[User](db, queryUser)
 	if err != nil {
 		return nil, err
 	}
 	// userValidator := user.NewUserValidator(db, conf.Sql.User, validator.validateFileName)
-	userValidator, err := unique.NewUniqueFieldValidator[*User](db, "users", "username", validator.Validate)
+	userValidator, err := unique.NewUniqueFieldValidator(db, "users", "username", validator.Validate)
 	if err != nil {
 		return nil, err
 	}

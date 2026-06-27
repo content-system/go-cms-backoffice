@@ -6,24 +6,26 @@ import (
 	"net/http"
 
 	"github.com/core-go/core"
-	approver "github.com/core-go/core/approver"
-	noti_adapter "github.com/core-go/core/notification/adapter"
+	"github.com/core-go/core/approver"
+	notification "github.com/core-go/core/notification/adapter"
 	v "github.com/core-go/core/validator"
 	q "github.com/core-go/sql"
-	"github.com/core-go/sql/query/builder"
 	"github.com/lib/pq"
 	"github.com/teris-io/shortid"
 
-	histories_adapter "go-service/pkg/histories/adapter"
-	history "go-service/pkg/history/adapter"
+	histories "github.com/core-go/core/histories/adapter"
+	history "github.com/core-go/core/history/adapter"
 )
 
 type ArticleTransport interface {
 	Search(w http.ResponseWriter, r *http.Request)
 	LoadDraft(w http.ResponseWriter, r *http.Request)
 	Load(w http.ResponseWriter, r *http.Request)
+	GetHistories(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
+	Approve(w http.ResponseWriter, r *http.Request)
+	Reject(w http.ResponseWriter, r *http.Request)
 	Patch(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 }
@@ -34,67 +36,24 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 		return nil, err
 	}
 
-	draftArticleRepository, err := NewDraftArticleAdapter(db, BuildDraftQuery, pq.Array)
+	draftArticleRepository, err := NewDraftArticleAdapter(db, BuildQuery, pq.Array)
 	if err != nil {
 		return nil, err
 	}
 
-	queryArticle := builder.UseQuery[Article, *ArticleFilter](db, "articles")
-	articleRepository, err := NewArticleAdapter(db, queryArticle, pq.Array)
+	articleRepository, err := NewArticleAdapter(db, pq.Array)
 	if err != nil {
 		return nil, err
 	}
 
 	buildParam := q.GetBuild(db)
 	approverPort := approver.NewApproversAdapter(db, "article", sqlGetApprover)
+	notificationPort := notification.NewNotificationAdapter(db, Generate, buildParam, "notifications", "tx", "time")
+	historyPort := history.NewHistoryAdapter(db, Generate, buildParam, "entity", "article", "histories", "author", "time")
+	articleService := NewArticleService(db, draftArticleRepository, articleRepository, historyPort, approverPort, notificationPort)
 
-	notificationAdapter := noti_adapter.NewNotificationAdapter(
-		db,
-		Generate,
-		buildParam,
-		"notifications",
-		"tx",
-		"time",
-	)
-
-	historyAdapter := history.NewHistoryAdapter(
-		db,
-		Generate,
-		buildParam,
-		"entity",
-		"article",
-		"histories",
-		"author",
-		"time",
-	)
-
-	articleService := NewArticleService(
-		db,
-		draftArticleRepository,
-		articleRepository,
-		historyAdapter,
-		approverPort,
-		notificationAdapter,
-	)
-
-	historiesPort := histories_adapter.NewHistoryAdapter(
-		db,
-		buildParam,
-		nil,
-		"histories",
-		"entity",
-		"author",
-		"time",
-	)
-
-	articleHandler := NewArticleHandler(
-		articleService,
-		logError,
-		validator.Validate,
-		writeLog,
-		action,
-		historiesPort,
-	)
+	historyQuery := histories.NewHistoryAdapter(db, buildParam, nil, "histories", "entity", "author", "time")
+	articleHandler := NewArticleHandler(articleService, logError, validator.Validate, writeLog, action, historyQuery)
 
 	return articleHandler, nil
 }

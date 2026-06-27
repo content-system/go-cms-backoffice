@@ -4,16 +4,17 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"time"
 
+	"github.com/core-go/core"
 	"github.com/core-go/core/approver"
 	"github.com/core-go/core/history"
 	"github.com/core-go/core/notification"
 	"github.com/core-go/core/shortid"
 	"github.com/core-go/core/tx"
 
-	"go-service/pkg/slug"
-	"go-service/pkg/status"
+	act "github.com/core-go/core/action"
+	"github.com/core-go/core/slug"
+	"github.com/core-go/core/status"
 )
 
 type ArticleService interface {
@@ -24,6 +25,8 @@ type ArticleService interface {
 	Patch(ctx context.Context, article map[string]interface{}) (int64, error)
 	Delete(ctx context.Context, id string) (int64, error)
 	Search(ctx context.Context, filter *ArticleFilter, limit int64, offset int64) ([]Article, int64, error)
+	Approve(ctx context.Context, id string, approvedBy string) (int64, error)
+	Reject(ctx context.Context, id string, rejectedBy string) (int64, error)
 }
 
 func NewArticleService(db *sql.DB, draftRepository DraftArticleRepository, repository ArticleRepository, historyRepository history.HistoryPort, approverPort approver.ApproversPort, notificationPort notification.NotificationPort) *ArticleUseCase {
@@ -32,11 +35,19 @@ func NewArticleService(db *sql.DB, draftRepository DraftArticleRepository, repos
 
 type ArticleUseCase struct {
 	db                *sql.DB
-	repository        ArticleRepository
 	draftRepository   DraftArticleRepository
+	repository        ArticleRepository
 	historyRepository history.HistoryPort
 	approverPort      approver.ApproversPort
 	notificationPort  notification.NotificationPort
+}
+
+func canReject(s string) bool {
+	return s == status.Submitted || s == status.Approved
+}
+
+func canUpdate(s string) bool {
+	return s != status.Approved && s != status.Expired
 }
 
 func (s *ArticleUseCase) Search(ctx context.Context, filter *ArticleFilter, limit int64, offset int64) ([]Article, int64, error) {
@@ -45,30 +56,26 @@ func (s *ArticleUseCase) Search(ctx context.Context, filter *ArticleFilter, limi
 func (s *ArticleUseCase) LoadDraft(ctx context.Context, id string) (*Article, error) {
 	return s.draftRepository.Load(ctx, id)
 }
-
 func (s *ArticleUseCase) Load(ctx context.Context, id string) (*Article, error) {
 	return s.repository.Load(ctx, id)
 }
-func (s *ArticleUseCase) Create(ctx context.Context, article *Article) (int64, error) {
-	now := time.Now()
 
+func (s *ArticleUseCase) Create(ctx context.Context, article *Article) (int64, error) {
 	id, err := shortid.Generate(ctx)
 	if err != nil {
 		return -1, err
 	}
 
 	article.Id = id
-
 	article.Slug = slug.Slugify(article.Title, article.Id, 10, 60)
-
 	article.AuthorId = article.CreatedBy
 
-	action := "C"
+	action := act.Create
 
 	if article.Status == status.Submitted {
 		article.SubmittedBy = article.CreatedBy
-		article.SubmittedAt = &now
-		action = "S"
+		article.SubmittedAt = core.Now()
+		action = act.Submit
 	}
 
 	res, err := tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
@@ -78,13 +85,7 @@ func (s *ArticleUseCase) Create(ctx context.Context, article *Article) (int64, e
 			return 0, err
 		}
 
-		_, err = s.historyRepository.Create(
-			ctx,
-			id,
-			article.CreatedBy,
-			action,
-			article.GetData(),
-		)
+		_, err = s.historyRepository.Create(ctx, id, article.CreatedBy, action, article.GetData())
 
 		if err != nil {
 			fmt.Println(err)
@@ -99,31 +100,6 @@ func (s *ArticleUseCase) Create(ctx context.Context, article *Article) (int64, e
 	})
 
 	return res, err
-}
-
-func (s *ArticleUseCase) notifySubmitter(ctx context.Context, id string, userId string, submitter string, message string) error {
-	noti := notification.Build(userId, submitter, fmt.Sprintf("/articles/%s", id), message)
-	_, err := s.notificationPort.Push(ctx, noti)
-	return err
-}
-
-func (s *ArticleUseCase) notifyApprovers(ctx context.Context, id string, userId string) error {
-	approvers, err := s.approverPort.GetApprovers(ctx)
-	if len(approvers) == 0 || err != nil {
-		return err
-	}
-
-	var notifications []notification.Notification
-
-	url := fmt.Sprintf("/articles/%s/approve", id)
-	msg := fmt.Sprintf("Please review and approve an article (id: '%s').", id)
-	for _, approver := range approvers {
-		noti := notification.Build(userId, approver, url, msg)
-		notifications = append(notifications, *noti)
-	}
-	_, err = s.notificationPort.PushNotifications(ctx, notifications)
-
-	return err
 }
 func (s *ArticleUseCase) Update(ctx context.Context, article *Article) (int64, error) {
 	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
@@ -156,9 +132,8 @@ func (s *ArticleUseCase) Update(ctx context.Context, article *Article) (int64, e
 
 		// 4. Handle submit flow
 		if article.Status == status.Submitted {
-			now := time.Now()
 			article.SubmittedBy = article.UpdatedBy
-			article.SubmittedAt = &now
+			article.SubmittedAt = core.Now()
 		}
 
 		// 5. Update draft
@@ -169,7 +144,7 @@ func (s *ArticleUseCase) Update(ctx context.Context, article *Article) (int64, e
 
 		// 6. if status is Submitted -> create history + notify
 		if article.Status == status.Submitted {
-			_, err = s.historyRepository.Create(ctx, article.Id, article.UpdatedBy, "S", article.GetData())
+			_, err = s.historyRepository.Create(ctx, article.Id, article.UpdatedBy, act.Submit, article.GetData())
 			if err != nil {
 				return 0, err
 			}
@@ -179,6 +154,25 @@ func (s *ArticleUseCase) Update(ctx context.Context, article *Article) (int64, e
 		return res, nil
 	})
 }
+func (s *ArticleUseCase) notifyApprovers(ctx context.Context, id string, userId string) error {
+	approvers, err := s.approverPort.GetApprovers(ctx)
+	if len(approvers) == 0 || err != nil {
+		return err
+	}
+
+	var notifications []notification.Notification
+
+	url := fmt.Sprintf("/articles/%s/approve", id)
+	msg := fmt.Sprintf("Please review and approve an article (id: '%s').", id)
+	for _, approver := range approvers {
+		noti := notification.Build(userId, approver, url, msg)
+		notifications = append(notifications, *noti)
+	}
+	_, err = s.notificationPort.PushNotifications(ctx, notifications)
+
+	return err
+}
+
 func (s *ArticleUseCase) Approve(ctx context.Context, id string, approvedBy string) (int64, error) {
 
 	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
@@ -204,11 +198,9 @@ func (s *ArticleUseCase) Approve(ctx context.Context, id string, approvedBy stri
 		}
 
 		// 4. Update fields
-		now := time.Now()
-
 		article.Status = status.Published
 		article.ApprovedBy = approvedBy
-		article.ApprovedAt = &now
+		article.ApprovedAt = core.Now()
 
 		article.UpdatedBy = approvedBy
 		article.UpdatedAt = article.ApprovedAt
@@ -221,13 +213,13 @@ func (s *ArticleUseCase) Approve(ctx context.Context, id string, approvedBy stri
 		}
 
 		// 6. Save to main repository
-		res, err := s.repository.Create(ctx, article)
+		res, err := s.repository.Save(ctx, article)
 		if err != nil {
 			return 0, err
 		}
 
 		// 7. History
-		_, err = s.historyRepository.Create(ctx, id, approvedBy, "A", article.GetData())
+		_, err = s.historyRepository.Create(ctx, id, approvedBy, act.Approve, article.GetData())
 		if err != nil {
 			return 0, err
 		}
@@ -264,11 +256,9 @@ func (s *ArticleUseCase) Reject(ctx context.Context, id string, rejectedBy strin
 		}
 
 		// 4. Update fields
-		now := time.Now()
-
 		article.Status = status.Rejected
 		article.ApprovedBy = rejectedBy
-		article.ApprovedAt = &now
+		article.ApprovedAt = core.Now()
 
 		article.UpdatedBy = rejectedBy
 		article.UpdatedAt = article.ApprovedAt
@@ -280,7 +270,7 @@ func (s *ArticleUseCase) Reject(ctx context.Context, id string, rejectedBy strin
 		}
 
 		// 6. History
-		_, err = s.historyRepository.Create(ctx, id, rejectedBy, "R", article.GetData())
+		_, err = s.historyRepository.Create(ctx, id, rejectedBy, act.Reject, article.GetData())
 		if err != nil {
 			return 0, err
 		}
@@ -293,22 +283,20 @@ func (s *ArticleUseCase) Reject(ctx context.Context, id string, rejectedBy strin
 		return res, nil
 	})
 }
-
-func canReject(s string) bool {
-	return s == status.Submitted || s == status.Approved
+func (s *ArticleUseCase) notifySubmitter(ctx context.Context, id string, userId string, submitter string, message string) error {
+	noti := notification.Build(userId, submitter, fmt.Sprintf("/articles/%s", id), message)
+	_, err := s.notificationPort.Push(ctx, noti)
+	return err
 }
 
-func canUpdate(s string) bool {
-	return s != status.Approved && s != status.Expired
+func (s *ArticleUseCase) Delete(ctx context.Context, id string) (int64, error) {
+	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
+		return s.draftRepository.Delete(ctx, id)
+	})
 }
 
 func (s *ArticleUseCase) Patch(ctx context.Context, article map[string]interface{}) (int64, error) {
 	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
-		return s.repository.Patch(ctx, article)
-	})
-}
-func (s *ArticleUseCase) Delete(ctx context.Context, id string) (int64, error) {
-	return tx.Execute(ctx, s.db, func(ctx context.Context) (int64, error) {
-		return s.repository.Delete(ctx, id)
+		return s.draftRepository.Patch(ctx, article)
 	})
 }

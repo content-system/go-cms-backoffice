@@ -2,13 +2,14 @@ package article
 
 import (
 	"fmt"
-	"go-service/pkg/histories"
-	"go-service/pkg/privilege"
 	"net/http"
 	"reflect"
 
 	"github.com/core-go/core"
+	"github.com/core-go/core/histories"
 	"github.com/core-go/search"
+
+	"go-service/pkg/privilege"
 )
 
 func NewArticleHandler(service ArticleService, logError core.Log, validate core.Validate[*Article], writeLog core.WriteLog, action *core.ActionConfig, historiesPort histories.HistoriesPort) *ArticleHandler {
@@ -27,6 +28,22 @@ type ArticleHandler struct {
 	histories.Handler
 }
 
+func (h *ArticleHandler) Search(w http.ResponseWriter, r *http.Request) {
+	filter := ArticleFilter{Filter: &search.Filter{}}
+	err := search.Decode(r, &filter, h.ParamIndex, h.FilterIndex)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	offset := search.GetOffset(filter.Limit, filter.Page)
+	articles, total, err := h.service.Search(r.Context(), &filter, filter.Limit, offset)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	core.JSON(w, http.StatusOK, &search.Result{List: &articles, Total: total})
+}
 func (h *ArticleHandler) LoadDraft(w http.ResponseWriter, r *http.Request) {
 	id, err := core.GetRequiredString(w, r, 1)
 	if err == nil {
@@ -135,6 +152,93 @@ func (h *ArticleHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+func (h *ArticleHandler) Approve(w http.ResponseWriter, r *http.Request) {
+	id, err := core.GetRequiredString(w, r, 1)
+	userId := privilege.FromContext(r.Context(), "userId")
+
+	if err == nil {
+		res, err := h.service.Approve(r.Context(), id, userId)
+		if err != nil {
+			h.Error(r.Context(), err.Error())
+			h.Log(r.Context(), h.Resource, "Approve", false, err.Error())
+			http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+			return
+		}
+
+		if res > 0 {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Approve",
+				true,
+				fmt.Sprintf("%s '%s'", "Approve", id),
+			)
+			core.JSON(w, http.StatusOK, res)
+		} else if res == 0 {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Approve",
+				false,
+				fmt.Sprintf("not found '%s'", id),
+			)
+			core.JSON(w, http.StatusNotFound, res)
+		} else {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Approve",
+				false,
+				fmt.Sprintf("conflict '%s'", id),
+			)
+			core.JSON(w, http.StatusConflict, res)
+		}
+	}
+}
+
+func (h *ArticleHandler) Reject(w http.ResponseWriter, r *http.Request) {
+	id, err := core.GetRequiredString(w, r, 1)
+	userId := privilege.FromContext(r.Context(), "userId")
+
+	if err == nil {
+		res, err := h.service.Reject(r.Context(), id, userId)
+		if err != nil {
+			h.Error(r.Context(), err.Error())
+			h.Log(r.Context(), h.Resource, "Reject", false, err.Error())
+			http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+			return
+		}
+
+		if res > 0 {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Reject",
+				true,
+				fmt.Sprintf("%s '%s'", "Reject", id),
+			)
+			core.JSON(w, http.StatusOK, res)
+		} else if res == 0 {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Reject",
+				false,
+				fmt.Sprintf("not found '%s'", id),
+			)
+			core.JSON(w, http.StatusNotFound, res)
+		} else {
+			h.Log(
+				r.Context(),
+				h.Resource,
+				"Reject",
+				false,
+				fmt.Sprintf("conflict '%s'", id),
+			)
+			core.JSON(w, http.StatusConflict, res)
+		}
+	}
+}
 func (h *ArticleHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := core.GetRequiredString(w, r)
 	if err == nil {
@@ -157,20 +261,4 @@ func (h *ArticleHandler) Delete(w http.ResponseWriter, r *http.Request) {
 			core.JSON(w, http.StatusConflict, res)
 		}
 	}
-}
-func (h *ArticleHandler) Search(w http.ResponseWriter, r *http.Request) {
-	filter := ArticleFilter{Filter: &search.Filter{}}
-	err := search.Decode(r, &filter, h.ParamIndex, h.FilterIndex)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	offset := search.GetOffset(filter.Limit, filter.Page)
-	articles, total, err := h.service.Search(r.Context(), &filter, filter.Limit, offset)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	core.JSON(w, http.StatusOK, &search.Result{List: &articles, Total: total})
 }

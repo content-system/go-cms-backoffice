@@ -6,13 +6,14 @@ toolchain go1.23.8
 
 require (
 	github.com/core-go/authentication v0.3.10
-	github.com/core-go/core v0.6.11
+	github.com/core-go/core v0.6.12
 	github.com/core-go/log v1.0.9
 	github.com/core-go/search v1.2.0
 	github.com/core-go/security v0.1.4
 	github.com/core-go/sql v0.6.6
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
+	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569
 	golang.org/x/text v0.23.0
 )
 
@@ -37,7 +38,6 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.23.0 // indirect

@@ -8,14 +8,14 @@ import (
 	"reflect"
 	"strings"
 
-	s "github.com/core-go/sql"
+	q "github.com/core-go/sql"
 )
 
 func NewDraftArticleAdapter(db *sql.DB, buildQuery func(*ArticleFilter) (string, []interface{}), toArray func(interface{}) interface {
 	driver.Valuer
 	sql.Scanner
 }) (*DraftArticleAdapter, error) {
-	parameters, err := s.CreateParameters(reflect.TypeOf(Article{}), db)
+	parameters, err := q.CreateParameters(reflect.TypeOf(Article{}), db)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func NewDraftArticleAdapter(db *sql.DB, buildQuery func(*ArticleFilter) (string,
 type DraftArticleAdapter struct {
 	DB         *sql.DB
 	BuildQuery func(*ArticleFilter) (string, []interface{})
-	*s.Parameters
+	*q.Parameters
 	Array func(interface{}) interface {
 		driver.Valuer
 		sql.Scanner
@@ -35,7 +35,7 @@ type DraftArticleAdapter struct {
 func (r *DraftArticleAdapter) All(ctx context.Context) ([]Article, error) {
 	query := `select * from draft_articles`
 	var articles []Article
-	err := s.Query(ctx, r.DB, r.Map, &articles, query)
+	err := q.Query(ctx, r.DB, r.Map, &articles, query)
 	return articles, err
 }
 
@@ -43,7 +43,7 @@ func (r *DraftArticleAdapter) Load(ctx context.Context, id string) (*Article, er
 	var articles []Article
 	query := fmt.Sprintf("select %s from draft_articles where id = %s limit 1", r.Fields, r.BuildParam(1))
 	fmt.Println(query)
-	err := s.QueryWithArray(ctx, r.DB, r.Map, &articles, r.Array, query, id)
+	err := q.QueryWithArray(ctx, r.DB, r.Map, &articles, r.Array, query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +54,8 @@ func (r *DraftArticleAdapter) Load(ctx context.Context, id string) (*Article, er
 }
 
 func (r *DraftArticleAdapter) Create(ctx context.Context, article *Article) (int64, error) {
-	query, args := s.BuildToInsertWithArray("draft_articles", article, r.BuildParam, true, r.Array, r.Schema)
-	tx := s.GetTx(ctx, r.DB)
+	query, args := q.BuildToInsertWithArray("draft_articles", article, r.BuildParam, true, r.Array, r.Schema)
+	tx := q.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
@@ -64,8 +64,8 @@ func (r *DraftArticleAdapter) Create(ctx context.Context, article *Article) (int
 }
 
 func (r *DraftArticleAdapter) Update(ctx context.Context, article *Article) (int64, error) {
-	query, args := s.BuildToUpdateWithArray("draft_articles", article, r.BuildParam, true, r.Array, r.Schema)
-	tx := s.GetTx(ctx, r.DB)
+	query, args := q.BuildToUpdateWithArray("draft_articles", article, r.BuildParam, true, r.Array, r.Schema)
+	tx := q.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
@@ -74,9 +74,9 @@ func (r *DraftArticleAdapter) Update(ctx context.Context, article *Article) (int
 }
 
 func (r *DraftArticleAdapter) Patch(ctx context.Context, article map[string]interface{}) (int64, error) {
-	colMap := s.JSONToColumns(article, r.JsonColumnMap)
-	query, args := s.BuildToPatchWithArray("draft_articles", colMap, r.Keys, r.BuildParam, r.Array)
-	tx := s.GetTx(ctx, r.DB)
+	colMap := q.JSONToColumns(article, r.JsonColumnMap)
+	query, args := q.BuildToPatchWithArray("draft_articles", colMap, r.Keys, r.BuildParam, r.Array)
+	tx := q.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
@@ -86,7 +86,7 @@ func (r *DraftArticleAdapter) Patch(ctx context.Context, article map[string]inte
 
 func (r *DraftArticleAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	query := fmt.Sprintf("delete from draft_articles where id = %s", r.BuildParam(1))
-	tx := s.GetTx(ctx, r.DB)
+	tx := q.GetTx(ctx, r.DB)
 	res, err := tx.ExecContext(ctx, query, id)
 	if err != nil {
 		return -1, err
@@ -100,8 +100,8 @@ func (r *DraftArticleAdapter) Search(ctx context.Context, filter *ArticleFilter,
 		return articles, 0, nil
 	}
 	query, params := r.BuildQuery(filter)
-	pagingQuery := s.BuildPagingQuery(query, limit, offset)
-	countQuery := s.BuildCountQuery(query)
+	pagingQuery := q.BuildPagingQuery(query, limit, offset)
+	countQuery := q.BuildCountQuery(query)
 
 	row := r.DB.QueryRowContext(ctx, countQuery, params...)
 	if row.Err() != nil {
@@ -113,20 +113,20 @@ func (r *DraftArticleAdapter) Search(ctx context.Context, filter *ArticleFilter,
 		return articles, total, err
 	}
 
-	err = s.QueryWithArray(ctx, r.DB, r.Map, &articles, r.Array, pagingQuery, params...)
+	err = q.QueryWithArray(ctx, r.DB, r.Map, &articles, r.Array, pagingQuery, params...)
 	return articles, total, err
 }
 
-func BuildDraftQuery(filter *ArticleFilter) (string, []interface{}) {
+func BuildQuery(filter *ArticleFilter) (string, []interface{}) {
 	query := "select * from draft_articles"
-	where, params := BuildDraftFilter(filter)
+	where, params := BuildFilter(filter)
 	if len(where) > 0 {
 		query = query + " where " + where
 	}
 	return query, params
 }
-func BuildDraftFilter(filter *ArticleFilter) (string, []interface{}) {
-	buildParam := s.BuildDollarParam
+func BuildFilter(filter *ArticleFilter) (string, []interface{}) {
+	buildParam := q.BuildDollarParam
 	var where []string
 	var params []interface{}
 	i := 1

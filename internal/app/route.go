@@ -76,12 +76,15 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 
 	articles := r.PathPrefix("/articles").Subrouter()
 	HandleWithSecurity(sec, articles, "/search", app.Article.Search, article, c.ActionRead, c.GET, c.POST)
-	HandleWithSecurity(sec, articles, "/", app.Article.Search, article, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, articles, "", app.Article.Search, article, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Load, article, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, articles, "/{id}/draft", app.Article.LoadDraft, article, c.ActionRead, c.GET)
+	HandleWithSecurity(sec, articles, "/{id}/histories", app.Article.GetHistories, article, c.ActionRead, c.GET)
 	HandleWithSecurity(sec, articles, "", app.Article.Create, article, c.ActionWrite, c.POST)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Update, article, c.ActionWrite, c.PUT)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Patch, article, c.ActionWrite, c.PATCH)
+	HandleWithSecurity(sec, articles, "/{id}/approve", app.Article.Approve, article, c.ActionApprove, c.PATCH)
+	HandleWithSecurity(sec, articles, "/{id}/reject", app.Article.Reject, article, c.ActionApprove, c.PATCH)
 	HandleWithSecurity(sec, articles, "/{id}", app.Article.Delete, article, c.ActionWrite, c.DELETE)
 
 	jobs := r.PathPrefix("/jobs").Subrouter()

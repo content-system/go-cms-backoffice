@@ -2,6 +2,8 @@ package article
 
 import (
 	"fmt"
+	"go-service/pkg/histories"
+	"go-service/pkg/privilege"
 	"net/http"
 	"reflect"
 
@@ -9,11 +11,12 @@ import (
 	"github.com/core-go/search"
 )
 
-func NewArticleHandler(service ArticleService, logError core.Log, validate core.Validate[*Article], writeLog core.WriteLog, action *core.ActionConfig) *ArticleHandler {
+func NewArticleHandler(service ArticleService, logError core.Log, validate core.Validate[*Article], writeLog core.WriteLog, action *core.ActionConfig, historiesPort histories.HistoriesPort) *ArticleHandler {
 	articleType := reflect.TypeOf(Article{})
 	parameters := search.CreateParameters(reflect.TypeOf(ArticleFilter{}), articleType)
 	attributes := core.CreateAttributes(articleType, logError, writeLog, action)
-	return &ArticleHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters}
+	historiesHandler := histories.NewHistoriesHandler("article", 1, historiesPort.GetHistories, nil, "list", "next", "limit", "historyId")
+	return &ArticleHandler{service: service, Validate: validate, Attributes: attributes, Parameters: parameters, Handler: *historiesHandler}
 }
 
 type ArticleHandler struct {
@@ -21,6 +24,7 @@ type ArticleHandler struct {
 	Validate core.Validate[*Article]
 	*core.Attributes
 	*search.Parameters
+	histories.Handler
 }
 
 func (h *ArticleHandler) LoadDraft(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +56,12 @@ func (h *ArticleHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &article)
 		if !core.HasError(w, r, errors, er2, h.Error, &article, h.Log, h.Resource, h.Action.Create) {
+			userId := privilege.FromContext(r.Context(), "userId")
+			now := core.Now()
+			article.CreatedBy = userId
+			article.CreatedAt = now
+			article.UpdatedBy = userId
+			article.UpdatedAt = now
 			res, er3 := h.service.Create(r.Context(), &article)
 			if er3 != nil {
 				h.Error(r.Context(), er3.Error())
@@ -75,6 +85,9 @@ func (h *ArticleHandler) Update(w http.ResponseWriter, r *http.Request) {
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &article)
 		if !core.HasError(w, r, errors, er2, h.Error, &article, h.Log, h.Resource, h.Action.Update) {
+			userId := privilege.FromContext(r.Context(), "userId")
+			article.UpdatedBy = userId
+			article.UpdatedAt = core.Now()
 			res, err := h.service.Update(r.Context(), &article)
 			if err != nil {
 				h.Error(r.Context(), err.Error())

@@ -1,14 +1,21 @@
 package article
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 
-	"github.com/lib/pq"
-
 	"github.com/core-go/core"
+	approver "github.com/core-go/core/approver"
+	noti_adapter "github.com/core-go/core/notification/adapter"
 	v "github.com/core-go/core/validator"
+	q "github.com/core-go/sql"
 	"github.com/core-go/sql/query/builder"
+	"github.com/lib/pq"
+	"github.com/teris-io/shortid"
+
+	histories_adapter "go-service/pkg/histories/adapter"
+	history "go-service/pkg/history/adapter"
 )
 
 type ArticleTransport interface {
@@ -26,6 +33,7 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
+
 	draftArticleRepository, err := NewDraftArticleAdapter(db, BuildDraftQuery, pq.Array)
 	if err != nil {
 		return nil, err
@@ -36,7 +44,87 @@ func NewArticleTransport(db *sql.DB, logError core.Log, writeLog core.WriteLog, 
 	if err != nil {
 		return nil, err
 	}
-	articleService := NewArticleService(db, draftArticleRepository, articleRepository)
-	articleHandler := NewArticleHandler(articleService, logError, validator.Validate, writeLog, action)
+
+	buildParam := q.GetBuild(db)
+	approverPort := approver.NewApproversAdapter(db, "article", sqlGetApprover)
+
+	notificationAdapter := noti_adapter.NewNotificationAdapter(
+		db,
+		Generate,
+		buildParam,
+		"notifications",
+		"tx",
+		"time",
+	)
+
+	historyAdapter := history.NewHistoryAdapter(
+		db,
+		Generate,
+		buildParam,
+		"entity",
+		"article",
+		"histories",
+		"author",
+		"time",
+	)
+
+	articleService := NewArticleService(
+		db,
+		draftArticleRepository,
+		articleRepository,
+		historyAdapter,
+		approverPort,
+		notificationAdapter,
+	)
+
+	historiesPort := histories_adapter.NewHistoryAdapter(
+		db,
+		buildParam,
+		nil,
+		"histories",
+		"entity",
+		"author",
+		"time",
+	)
+
+	articleHandler := NewArticleHandler(
+		articleService,
+		logError,
+		validator.Validate,
+		writeLog,
+		action,
+		historiesPort,
+	)
+
 	return articleHandler, nil
 }
+
+var sid *shortid.Shortid
+
+func Generate(ctx context.Context) (string, error) {
+	if sid == nil {
+		s, err := shortid.New(1, shortid.DefaultABC, 2342)
+		if err != nil {
+			return "", err
+		}
+
+		sid = s
+	}
+
+	return sid.Generate()
+}
+
+const sqlGetApprover = `
+	select
+		distinct u.user_id
+	from
+		users u
+	join user_roles ur on
+		u.user_id = ur.user_id
+	join role_modules r on
+		ur.role_id = r.role_id
+	where
+		(r.permissions & 8) = 8
+		and u.status = 'A'
+		and r.module_id = $1
+`

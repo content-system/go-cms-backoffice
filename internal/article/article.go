@@ -1,6 +1,10 @@
 package article
 
-import "time"
+import (
+	"time"
+
+	"github.com/core-go/core/convert"
+)
 
 type Article struct {
 	Id          string     `json:"id" gorm:"primary_key;column:id" bson:"_id" dynamodbav:"id,omitempty" firestore:"-"`
@@ -23,4 +27,10 @@ type Article struct {
 	UpdatedBy   string     `json:"updatedBy,omitempty" gorm:"column:updated_by" bson:"updatedBy,omitempty" dynamodbav:"updatedBy,omitempty" firestore:"updatedBy,omitempty"`
 	UpdatedAt   *time.Time `json:"updatedAt,omitempty" gorm:"column:updated_at" bson:"updatedAt,omitempty" dynamodbav:"updatedAt,omitempty" firestore:"updatedAt,omitempty"`
 	// Name        string     `json:"name,omitempty" gorm:"column:name" bson:"name,omitempty" dynamodbav:"name,omitempty" firestore:"name,omitempty"`
+}
+
+var RemovedColumns = []string{"submittedBy", "submittedAt", "approvedBy", "approvedAt", "createdBy", "createdAt", "updatedBy", "updatedAt"}
+
+func (a Article) GetData() map[string]interface{} {
+	return convert.ToMap(a)
 }

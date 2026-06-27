@@ -52,7 +52,7 @@ func (h *Handler) GetHistories(w http.ResponseWriter, r *http.Request) {
 	if len(id) > 0 {
 		limit, nextPageToken, err := paging.GetNext(w, r, 20, h.NextPageToken, h.Limit)
 		if err == nil {
-			res, next, err := h.load(r.Context(), h.resource, id, limit, nextPageToken)
+			res, _, err := h.load(r.Context(), h.resource, id, limit, nextPageToken)
 			if err != nil {
 				if h.logError != nil {
 					h.logError(r.Context(), err.Error())
@@ -62,10 +62,7 @@ func (h *Handler) GetHistories(w http.ResponseWriter, r *http.Request) {
 				}
 				return
 			}
-			m := make(map[string]interface{})
-			m[h.List] = res
-			m[h.Next] = next
-			JSON(w, 200, m)
+			JSON(w, 200, res)
 		}
 	}
 }

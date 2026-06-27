@@ -39,6 +39,16 @@ func (r *ArticleAdapter) All(ctx context.Context) ([]Article, error) {
 	return articles, err
 }
 
+func (r *ArticleAdapter) Exist(ctx context.Context, id string) (bool, error) {
+	var exists bool
+	query := `select exists (select 1 from articles where id = $1)`
+	err := r.DB.QueryRowContext(ctx, query, id).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 func (r *ArticleAdapter) Load(ctx context.Context, id string) (*Article, error) {
 	var articles []Article
 	query := fmt.Sprintf("select %s from articles where id = %s limit 1", r.Fields, r.BuildParam(1))

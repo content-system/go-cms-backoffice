@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	h "github.com/core-go/core/histories"
+	h "go-service/pkg/histories"
+
 	u "github.com/core-go/core/user"
 )
 
@@ -18,6 +19,7 @@ type HistoryAdapter struct {
 	Id         string
 	User       string
 	Time       string
+	Action     string
 	Data       string
 	GetUsers   func(ctx context.Context, ids []string) ([]u.User, error)
 }
@@ -27,7 +29,7 @@ func UseHistories(db *sql.DB, buildParam func(int) string, getUsers func(ctx con
 	return adapter.GetHistories
 }
 func NewHistoryAdapter(db *sql.DB, buildParam func(int) string, getUsers func(ctx context.Context, ids []string) ([]u.User, error), table string, resource string, user string, time string, opts ...string) *HistoryAdapter {
-	var historyId, id, data string
+	var historyId, id, action, data string
 	if len(opts) > 0 {
 		historyId = opts[0]
 	} else {
@@ -39,11 +41,16 @@ func NewHistoryAdapter(db *sql.DB, buildParam func(int) string, getUsers func(ct
 		id = "id"
 	}
 	if len(opts) > 2 {
-		data = opts[2]
+		action = opts[2]
+	} else {
+		action = "action"
+	}
+	if len(opts) > 3 {
+		data = opts[3]
 	} else {
 		data = "data"
 	}
-	return &HistoryAdapter{DB: db, BuildParam: buildParam, Table: table, HistoryId: historyId, Resource: resource, Id: id, User: user, Time: time, Data: data, GetUsers: getUsers}
+	return &HistoryAdapter{DB: db, BuildParam: buildParam, Table: table, HistoryId: historyId, Resource: resource, Id: id, User: user, Time: time, Action: action, Data: data, GetUsers: getUsers}
 }
 func (a *HistoryAdapter) GetHistories(ctx context.Context, resource string, id string, limit int64, nextPageToken string) ([]h.History, string, error) {
 	if limit <= 0 {

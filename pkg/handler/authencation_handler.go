@@ -28,8 +28,9 @@ type AuthenticationHandler struct {
 	SystemError        int
 	Timeout            int
 	GenerateToken      func(payload interface{}, secret string, expiresIn int64) (string, error)
-	TokenConfig        a.TokenConfig
-	PayloadConfig      a.PayloadConfig
+	Token              a.TokenConfig
+	RememberToken      a.TokenConfig
+	Payload            a.PayloadConfig
 	Error              func(context.Context, string, ...map[string]interface{})
 	Ip                 string
 	UserId             string
@@ -106,7 +107,7 @@ func NewAuthenticationHandlerWithDecrypter(authenticate Authenticate,
 	} else {
 		action = "authenticate"
 	}
-	return &AuthenticationHandler{Auth: authenticate, SystemError: systemError, Timeout: timeout, SameSite: sameSite, Cookie: cookie, CookieName: cookieName, RememberCookieName: rememberCookieName, Resource: resource, Action: action, GenerateToken: generateToken, TokenConfig: tokenConfig, PayloadConfig: payloadConfig, Error: logError, Ip: ip, UserId: userId, Whitelist: addTokenIntoWhitelist, Log: writeLog, Decrypt: decrypt, IpFromRequest: ipFromRequest}
+	return &AuthenticationHandler{Auth: authenticate, SystemError: systemError, Timeout: timeout, SameSite: sameSite, Cookie: cookie, CookieName: cookieName, RememberCookieName: rememberCookieName, Resource: resource, Action: action, GenerateToken: generateToken, Token: tokenConfig, RememberToken: rememberTokenConfig, Payload: payloadConfig, Error: logError, Ip: ip, UserId: userId, Whitelist: addTokenIntoWhitelist, Log: writeLog, Decrypt: decrypt, IpFromRequest: ipFromRequest}
 }
 func NewAuthenticationHandlerWithCache(authenticate Authenticate, systemError int, timeout int, logError LogError,
 	store StoreService,

@@ -1,6 +1,7 @@
 package app
 
 import (
+	a "github.com/core-go/authentication"
 	q "github.com/core-go/authentication/sql"
 	"github.com/core-go/core"
 	"github.com/core-go/core/audit"
@@ -9,28 +10,31 @@ import (
 	"github.com/core-go/core/cors"
 	"github.com/core-go/core/server"
 	mid "github.com/core-go/log/middleware"
-	"github.com/core-go/log/zap"
+	log "github.com/core-go/log/zap"
 	sa "github.com/core-go/sql/action"
 )
 
 type Config struct {
-	Server       server.ServerConfig    `mapstructure:"server"`
-	Allow        cors.AllowConfig       `mapstructure:"allow"`
-	SecuritySkip bool                   `mapstructure:"security_skip"`
-	Template     bool                   `mapstructure:"template"`
-	Auth         q.SqlAuthConfig        `mapstructure:"auth"`
-	DB           DBConfig               `mapstructure:"db"`
-	Log          log.Config             `mapstructure:"log"`
-	MiddleWare   mid.LogConfig          `mapstructure:"middleware"`
-	AutoRoleId   *bool                  `mapstructure:"auto_role_id"`
-	AutoUserId   *bool                  `mapstructure:"auto_user_id"`
-	Role         code.Config            `mapstructure:"role"`
-	Code         code.Config            `mapstructure:"code"`
-	AuditLog     sa.ActionLogConf       `mapstructure:"audit_log"`
-	AuditClient  audit.AuditLogClient   `mapstructure:"audit_client"`
-	Action       *core.ActionConfig     `mapstructure:"action"`
-	Tracking     builder.TrackingConfig `mapstructure:"tracking"`
-	Sql          SqlStatement           `mapstructure:"sql"`
+	Server        server.ServerConfig    `mapstructure:"server"`
+	Allow         cors.AllowConfig       `mapstructure:"allow"`
+	SecuritySkip  bool                   `mapstructure:"security_skip"`
+	Template      bool                   `mapstructure:"template"`
+	Token         a.TokenConfig          `mapstructure:"token"`
+	RememberToken a.TokenConfig          `mapstructure:"remember_token"`
+	Payload       a.PayloadConfig        `mapstructure:"payload"`
+	Auth          q.SqlAuthConfig        `mapstructure:"auth"`
+	DB            DBConfig               `mapstructure:"db"`
+	Log           log.Config             `mapstructure:"log"`
+	MiddleWare    mid.LogConfig          `mapstructure:"middleware"`
+	AutoRoleId    *bool                  `mapstructure:"auto_role_id"`
+	AutoUserId    *bool                  `mapstructure:"auto_user_id"`
+	Role          code.Config            `mapstructure:"role"`
+	Code          code.Config            `mapstructure:"code"`
+	AuditLog      sa.ActionLogConf       `mapstructure:"audit_log"`
+	AuditClient   audit.AuditLogClient   `mapstructure:"audit_client"`
+	Action        *core.ActionConfig     `mapstructure:"action"`
+	Tracking      builder.TrackingConfig `mapstructure:"tracking"`
+	Sql           SqlStatement           `mapstructure:"sql"`
 }
 type DBConfig struct {
 	DataSourceName string `yaml:"data_source_name" mapstructure:"data_source_name" json:"dataSourceName,omitempty" gorm:"column:datasourcename" bson:"dataSourceName,omitempty" dynamodbav:"dataSourceName,omitempty" firestore:"dataSourceName,omitempty"`

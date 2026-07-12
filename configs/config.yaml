@@ -39,6 +39,18 @@ ldap:
   display_name: displayName
   users: test01,test02,kaka,zinedine.zidane,gareth.bale
   timeout: 3000
+token:
+  secret: secretbackoffice
+  expires: 86400000
+remember_token:
+  secret: secretremember
+  expires: 864000000
+payload:
+  ip: ip
+  id: userId
+  username: username
+  email: email
+  lang: lang
 auth:
   token:
     secret: secretbackoffice

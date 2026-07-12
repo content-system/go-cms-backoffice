@@ -16,7 +16,7 @@ type Article struct {
 	Thumbnail   string     `json:"thumbnail,omitempty" gorm:"column:thumbnail" bson:"thumbnail,omitempty" dynamodbav:"thumbnail,omitempty" firestore:"thumbnail,omitempty"`
 	Tags        []string   `json:"tags,omitempty" gorm:"column:tags" bson:"tags,omitempty" dynamodbav:"tags,omitempty" firestore:"tags,omitempty"`
 	Status      string     `json:"status,omitempty" gorm:"column:status" bson:"status" dynamodbav:"status,omitempty" firestore:"status,omitempty"`
-	AuthorId    string     `json:"authorId,omitempty" gorm:"column:authorid" bson:"authorId,omitempty" dynamodbav:"authorId,omitempty" firestore:"authorId,omitempty"`
+	AuthorId    string     `json:"authorId,omitempty" gorm:"column:author_id" bson:"authorId,omitempty" dynamodbav:"authorId,omitempty" firestore:"authorId,omitempty"`
 
 	SubmittedBy string     `json:"submittedBy,omitempty" gorm:"column:submitted_by" bson:"submittedBy,omitempty" dynamodbav:"submittedBy,omitempty" firestore:"submittedBy,omitempty"`
 	SubmittedAt *time.Time `json:"submittedAt,omitempty" gorm:"column:submitted_at" bson:"submittedAt,omitempty" dynamodbav:"submittedAt,omitempty" firestore:"submittedAt,omitempty"`

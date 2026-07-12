@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/core-go/authentication"
-	ah "github.com/core-go/authentication/handler"
+	ah "go-service/pkg/handler"
+
+	auth "github.com/core-go/authentication"
 	as "github.com/core-go/authentication/sql"
 	"github.com/core-go/core/authorization"
 	"github.com/core-go/core/code"
@@ -38,8 +39,8 @@ import (
 type ApplicationContext struct {
 	SkipSecurity         bool
 	Health               *health.Handler
-	Authorization        *authorization.Handler
-	AuthorizationChecker *sec.AuthorizationChecker
+	Authorization        *authorization.CookieHandler
+	AuthorizationChecker *sec.CookieChecker
 	Authorizer           *sec.Authorizer
 	Authentication       *ah.AuthenticationHandler
 	Privileges           *ah.PrivilegesHandler
@@ -85,9 +86,9 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	sqlPrivilegeLoader := ss.NewPrivilegeLoader(db, cfg.Sql.PermissionsByUser)
 
 	userId := cfg.Tracking.User
-	tokenPort := jwt.NewTokenAdapter()
-	authorizationHandler := authorization.NewHandler(tokenPort.GetAndVerifyToken, cfg.Auth.Token.Secret)
-	authorizationChecker := sec.NewAuthorizationChecker(tokenPort.GetAndVerifyToken, cfg.Auth.Token.Secret, userId)
+	tokenPort := jwt.NewCookieTokenAdapter()
+	authorizationHandler := authorization.NewCookieHandler(tokenPort.GetAndVerifyToken, cfg.Auth.Token.Secret)
+	authorizationChecker := sec.NewCookieChecker(tokenPort.GetAndVerifyToken, cfg.Auth.Token.Secret, nil, userId)
 	authorizer := sec.NewAuthorizer(sqlPrivilegeLoader.Privilege, true, userId)
 
 	authStatus := auth.InitStatus(cfg.Auth.Status)
@@ -100,8 +101,8 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	if er4 != nil {
 		return nil, er4
 	}
-	authenticator := auth.NewAuthenticator(authStatus, userPort, bcryptComparator, tokenPort.GenerateToken, cfg.Auth.Token, cfg.Auth.Payload, privilegePort.Load)
-	authenticationHandler := ah.NewAuthenticationHandler(authenticator.Authenticate, authStatus.Error, authStatus.Timeout, logError, writeLog)
+	authenticator := auth.NewAuthenticator(authStatus, userPort, bcryptComparator, privilegePort.Load)
+	authenticationHandler := ah.NewAuthenticationHandler(authenticator.Authenticate, authStatus.Error, authStatus.Timeout, tokenPort.GenerateToken, cfg.Token, cfg.RememberToken, cfg.Payload, true, logError, writeLog)
 
 	privilegeReader, er5 := as.NewPrivilegesReader(db, cfg.Sql.Privileges)
 	if er5 != nil {

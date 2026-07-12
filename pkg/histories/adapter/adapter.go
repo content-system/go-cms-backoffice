@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	h "github.com/core-go/core/histories"
+	h "go-service/pkg/histories"
+
 	u "github.com/core-go/core/user"
 )
 
@@ -55,7 +56,7 @@ func (a *HistoryAdapter) GetHistories(ctx context.Context, resource string, id s
 	if limit <= 0 {
 		limit = 20
 	}
-	histories := make([]h.History, 0)
+	var histories []h.History
 	var offset int64
 	if len(nextPageToken) > 0 {
 		positionQuery := fmt.Sprintf("select position from (select %s, row_number() over(order by %s desc) as position from %s where %s = %s and %s = %s) result where %s = %s",
@@ -74,8 +75,8 @@ func (a *HistoryAdapter) GetHistories(ctx context.Context, resource string, id s
 	} else {
 		offset = 0
 	}
-	query := fmt.Sprintf("select %s, %s, %s, %s, %s from %s where %s = %s and %s = %s order by %s desc limit %d offset %d",
-		a.HistoryId, a.User, a.Time, a.Action, a.Data, a.Table, a.Id, a.BuildParam(1), a.Resource, a.BuildParam(2), a.Time, limit, offset)
+	query := fmt.Sprintf("select %s, %s, %s, %s from %s where %s = %s and %s = %s order by %s desc limit %d offset %d",
+		a.HistoryId, a.User, a.Time, a.Data, a.Table, a.Id, a.BuildParam(1), a.Resource, a.BuildParam(2), a.Time, limit, offset)
 	rows, err := a.DB.QueryContext(ctx, query, id, resource)
 	if err != nil {
 		return histories, "", err
@@ -83,7 +84,7 @@ func (a *HistoryAdapter) GetHistories(ctx context.Context, resource string, id s
 	defer rows.Close()
 	for rows.Next() {
 		var item h.History
-		err = rows.Scan(&item.Id, &item.Author, &item.Time, &item.Action, &item.Data)
+		err = rows.Scan(&item.Id, &item.Author, &item.Time, &item.Data)
 		if err != nil {
 			return histories, "", err
 		}

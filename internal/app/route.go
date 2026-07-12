@@ -26,7 +26,7 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	if err != nil {
 		return err
 	}
-	r.Use(app.Authorization.HandleAuthorization)
+	r.Use(app.Authorization.Handle)
 	sec := &s.SecurityConfig{SecuritySkip: conf.SecuritySkip, Check: app.AuthorizationChecker.Check, Authorize: app.Authorizer.Authorize}
 
 	Handle(r, "/health", app.Health.Check, c.GET)

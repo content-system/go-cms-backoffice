@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.8
 
 require (
-	github.com/core-go/authentication v0.3.12
+	github.com/core-go/authentication v0.3.14
 	github.com/core-go/core v0.6.12
 	github.com/core-go/log v1.0.9
 	github.com/core-go/search v1.2.0

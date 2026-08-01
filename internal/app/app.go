@@ -4,9 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	ah "go-service/pkg/handler"
-
 	auth "github.com/core-go/authentication"
+	ah "github.com/core-go/authentication/handler"
 	as "github.com/core-go/authentication/sql"
 	"github.com/core-go/core/authorization"
 	"github.com/core-go/core/code"
